@@ -1,0 +1,18 @@
+{
+    "name": "Milhouzer.InputSystem",
+    "rootNamespace": "",
+    "references": [
+        "GUID:75469ad4d38634e559750d17036d5f7c",
+        "GUID:75ef23e32a1a3864db2cee570842ef76",
+        "GUID:d7721fa74c12f514187710f228b87764"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

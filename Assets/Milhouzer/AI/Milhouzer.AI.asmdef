@@ -1,0 +1,17 @@
+{
+    "name": "Milhouzer.AI",
+    "rootNamespace": "",
+    "references": [
+        "GUID:d7721fa74c12f514187710f228b87764",
+        "GUID:c922fc2225a82354fb8628482a389eb2"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

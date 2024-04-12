@@ -1,0 +1,18 @@
+{
+    "name": "Milhouzer.CameraSystem",
+    "rootNamespace": "",
+    "references": [
+        "GUID:d7721fa74c12f514187710f228b87764",
+        "GUID:37ef39b592715e245b43db372d76adbc",
+        "GUID:cf7c7237586a6d140ba79bb65d5e88de"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

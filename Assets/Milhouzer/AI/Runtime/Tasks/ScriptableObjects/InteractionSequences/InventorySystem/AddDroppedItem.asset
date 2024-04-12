@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a54943fc078067d4cb827b11454e0685, type: 3}
+  m_Name: AddDroppedItem
+  m_EditorClassIdentifier: 
+  steps:
+  - Task:
+      rid: 8816259566643183619
+    TargetType: 1
+  references:
+    version: 2
+    RefIds:
+    - rid: 8816259566643183619
+      type: {class: AddItem, ns: Milhouzer.InventorySystem, asm: Assembly-CSharp}
+      data:
+        _data:
+          _targetType: 0
+          _failureHandle: 0
+          Inventory: {fileID: 0}
+          Item:
+            Data: {fileID: 0}
+            Amount: 0

@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e862a59ef8c572845bd6ecbf017b421f, type: 3}
+  m_Name: Apple
+  m_EditorClassIdentifier: 
+  id: apple
+  _displayName: Apple
+  _sprite: {fileID: 21300000, guid: 29164ad149562ce4090e257de6176a5a, type: 3}
+  _isStackable: 1
+  _maxStack: 100
+  _renderModel: {fileID: 3522609488548762159, guid: ca7933f8f5dfd61488a5f24614f85f9e, type: 3}
+  _category: 0
+  _properties:
+  - Key: cook_time
+    FloatValue: 2.5
+    IntValue: 0
+    StringValue: 
+    ObjectReferenceValue: {fileID: 0}

@@ -1,0 +1,24 @@
+{
+    "name": "Milhouzer.GameManagement",
+    "rootNamespace": "",
+    "references": [
+        "GUID:75469ad4d38634e559750d17036d5f7c",
+        "GUID:75ef23e32a1a3864db2cee570842ef76",
+        "GUID:37ef39b592715e245b43db372d76adbc",
+        "GUID:cf7c7237586a6d140ba79bb65d5e88de",
+        "GUID:d7721fa74c12f514187710f228b87764",
+        "GUID:b1196c6a59d57414587877ae7e562bbe",
+        "GUID:7515de313d11b1947b3d8d7ba5fa7906",
+        "GUID:6055be8ebefd69e48b49212b09b47b2f",
+        "GUID:c922fc2225a82354fb8628482a389eb2"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
