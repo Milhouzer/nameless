@@ -55,8 +55,8 @@ namespace Milhouzer.InventorySystem.CraftingSystem
 
             IItemStack currentFuel = slot.Stack;
 
-            ItemProperty power = currentFuel.Item.Data.GetProperty("fuel_power");
-            RemainingPower = power.FloatValue - elapsedTime + RemainingPower;
+            // ItemProperty<int> power = currentFuel.Item.Data.GetProperty<int>("fuel_power");
+            // RemainingPower = power.FloatValue - elapsedTime + RemainingPower;
 
             return _inputFuel.RemoveItem(slot.Stack.Item).Result == RemoveItemOperationResult.RemovedAll;
         }

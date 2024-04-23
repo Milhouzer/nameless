@@ -1,3 +1,5 @@
+using System;
+
 namespace Milhouzer.InventorySystem
 {
     public enum ItemCategory
@@ -5,5 +7,15 @@ namespace Milhouzer.InventorySystem
         Food,
         Fuel,
         Material,
+    }
+
+    [Flags]
+    public enum ItemFlags
+    {
+        Liquid = 0x1,
+        Eatable = 0x2,
+        Consumable = 0x4,
+        Vegetable = 0x8,
+        Tools = 0x11,
     }
 }
