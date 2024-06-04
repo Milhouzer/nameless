@@ -22,7 +22,7 @@ MonoBehaviour:
       type: {class: ProvideFuel, ns: Milhouzer.AI.Modules.InventorySystem, asm: Milhouzer.AI}
       data:
         _data:
-          _targetType: 1
+          _targetType: 0
           _failureHandle: 0
           _name: ProvideFuel Task Data
           Inventory: {fileID: 0}

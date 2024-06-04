@@ -141,12 +141,9 @@ namespace Milhouzer.InventorySystem
 
             foreach(Ingredient ingredient in needed)
             {
-                /// <TODO>
-                /// THIS NEEDS ABSTRACTION
-                /// </TODO>
-                ItemSlot slot = inventory.FindItem(x => x.Stack.Item.Data.ID == ingredient.name);
+                IItem ingredientItem = inventory.FindItem(x => x.Data.ID == ingredient.name);
 
-                RemoveItemOperation operation = inventory.RemoveItem(slot);
+                RemoveItemOperation operation = inventory.RemoveItem(ingredientItem);
             }
 
             return true;

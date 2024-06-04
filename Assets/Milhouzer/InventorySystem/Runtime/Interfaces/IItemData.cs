@@ -13,5 +13,6 @@ namespace Milhouzer.InventorySystem
         public int MaxStack { get; }
         public GameObject RenderModel { get; }
         public ItemCategory Category { get; }
+        public ItemProperty GetProperty(string key);
     }
 }

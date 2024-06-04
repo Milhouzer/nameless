@@ -47,7 +47,7 @@ namespace Milhouzer.InventorySystem
             }
 
             _item = new BaseItem(data);
-            _amount = Mathf.Clamp(amount, 1, data.MaxStack);
+            _amount = Mathf.Clamp(amount, 0, data.MaxStack);
         }
 
         public AddItemOperation Add(int amount)
@@ -58,6 +58,7 @@ namespace Milhouzer.InventorySystem
             }
 
             int added = Mathf.Min(MaxAmount - Amount, amount);
+            Debug.Log("Add item " + amount + " " + added + " " + MaxAmount);
             _amount += added;
             
             return new AddItemOperation(added == amount ? AddItemOperationResult.AddedAll : AddItemOperationResult.PartiallyAdded, added);
@@ -72,6 +73,7 @@ namespace Milhouzer.InventorySystem
             }
 
             int removed = Mathf.Min(_amount, amount);
+            Debug.Log(removed + " " + _amount + " " + amount);
             _amount -= removed;
 
             return new RemoveItemOperation(removed == amount ? RemoveItemOperationResult.RemovedAll : RemoveItemOperationResult.PartiallyRemoved, removed);

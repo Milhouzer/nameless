@@ -48,21 +48,19 @@ namespace Milhouzer.InventorySystem.CraftingSystem
                 AddItemOperation operation = inventory.AddItem(stack);
                 if(operation.Result == AddItemOperationResult.AddedAll)
                 {
-                    _output.RemoveSlot(i);
+                    _output.RemoveItem(_output.Slots[i].Item);
                     left--;
                 }
             }
             return new RemoveItemOperation();
         }
 
-        public virtual bool TryStartCraft()
+        public virtual void TryStartCraft()
         {
             if(InventoryManager.Instance.CanCraftItem(_inputIngredients, RecipeDebug, Process))
             {
                 CurrentCraftProcess = StartCoroutine(CraftProcess());
-                return true;
             }
-            return false;
         }
         
         public virtual void StopCraft()

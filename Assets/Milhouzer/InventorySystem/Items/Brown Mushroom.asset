@@ -12,9 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e862a59ef8c572845bd6ecbf017b421f, type: 3}
   m_Name: Brown Mushroom
   m_EditorClassIdentifier: 
-  id: brown_mushroom
+  _id: brown_mushroom
   _displayName: Brown Mushroom
-  _sprite: {fileID: 21300000, guid: dee7bf7b50f633c41b513320c841d2ce, type: 3}
+  _icon: {fileID: 0}
   _isStackable: 1
   _maxStack: 100
   _renderModel: {fileID: 8741712160745244136, guid: 35c2f3f0b21821d4ea031f3540e89aa3, type: 3}
+  _category: 0
+  _flags: 0
+  _properties: []
+  references:
+    version: 2
+    RefIds: []

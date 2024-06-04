@@ -14,7 +14,8 @@ namespace Milhouzer.InventorySystem
         
         public bool IsEmpty { get; }
         public int MaxSlots { get; }
-        public ReadOnlyCollection<TSlot> Slots { get; }
+        public List<TSlot> Slots { get; }
+
 
         ////// METHODS //////
         
@@ -24,10 +25,7 @@ namespace Milhouzer.InventorySystem
         public AddItemOperation AddItem(TSlot slot, IItem item);
 
         public RemoveItemOperation RemoveItem(IItem item);
-        public RemoveItemOperation RemoveItem(TStack stack);
-        public RemoveItemOperation RemoveItem(TSlot slot);
-
-        public TSlot FindItem(Predicate<TSlot> predicate);
+        public RemoveItemOperation RemoveItem(IItem item, int amount);
 
         public GameObject DropItem(IItem item);
         public GameObject DropItem(TStack stack);

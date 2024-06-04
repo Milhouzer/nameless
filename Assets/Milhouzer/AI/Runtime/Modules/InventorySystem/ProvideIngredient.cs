@@ -39,11 +39,11 @@ namespace Milhouzer.AI.Modules.InventorySystem
                 switch(operation.Result)
                 {
                     case AddItemOperationResult.AddedAll:
-                        _data.Inventory.RemoveItem(slot);
+                        _data.Inventory.RemoveItem(slot.Item);
                         taskRunState = TaskRunState.Finished;
                         break;
                     case AddItemOperationResult.PartiallyAdded:
-                        _data.Inventory.RemoveItem(new ItemStack(slot.Data, operation.Added));
+                        _data.Inventory.RemoveItem(slot.Item, operation.Added);
                         taskRunState = TaskRunState.Finished;
                         break;
                     case AddItemOperationResult.AddedNone:

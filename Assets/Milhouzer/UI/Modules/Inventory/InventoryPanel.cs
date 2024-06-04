@@ -143,12 +143,14 @@ namespace Milhouzer.UI.InventorySystem
             }
             else
             {
+                Debug.Log("Refresh inventory " + _inventory);
                 for(int j = 0; j < slots.Count; j++)
                 {
                     if(j < _inventory.Slots.Count)
                     {
                         ItemSlot slot = _inventory.Slots[j];
                             
+                        Debug.Log(slot.Index + " " + slots.Count);
                         ItemSlotUI slotUI = slots[slot.Index];
                         slotUI.SetItem(slot);
                     }else

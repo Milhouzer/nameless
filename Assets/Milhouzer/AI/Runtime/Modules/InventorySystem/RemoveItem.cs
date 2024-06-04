@@ -25,7 +25,7 @@ namespace Milhouzer.AI.Modules.InventorySystem
         {
             if(_data.Inventory != null)
             {
-                RemoveItemOperation operation = _data.Inventory.RemoveItem(_itemStack);
+                RemoveItemOperation operation = _data.Inventory.RemoveItem(_itemStack.Item, _itemStack.Amount);
                 
                 switch(operation.Result)
                 {

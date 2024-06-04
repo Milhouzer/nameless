@@ -12,9 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e862a59ef8c572845bd6ecbf017b421f, type: 3}
   m_Name: Oyster Mushroom
   m_EditorClassIdentifier: 
-  id: oyster_mushroom
+  _id: oyster_mushroom
   _displayName: Oyster Mushroom
-  _sprite: {fileID: 21300000, guid: 03a53487ea62eee449fdc96792d8de03, type: 3}
+  _icon: {fileID: 0}
   _isStackable: 1
   _maxStack: 100
   _renderModel: {fileID: 8741712160745244136, guid: 35c2f3f0b21821d4ea031f3540e89aa3, type: 3}
+  _category: 0
+  _flags: 0
+  _properties: []
+  references:
+    version: 2
+    RefIds: []

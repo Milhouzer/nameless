@@ -21,3 +21,9 @@ Properties are like "stats" for the item, they allow fast behavior attribution t
 
 * Created a nested editor on the main editor that allows to set/edit/delete properties.
 
+## ... - Changes in inventory system - Make use of item property
+
+IInventory interface contains no utility methods, just operations on items. Utility methods (FindItem, FindSlot, FindItemByCategory, etc.) have been created as extension methods. Removed some other methods to simplify things.
+
+* Fixed some bugs on ProvideFuel/ProvideIngredients tasks that wouldn't remove items properly
+* Inventory now stores only ItemSlot that holds items, not a full list of empty slots.

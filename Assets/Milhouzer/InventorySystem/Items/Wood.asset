@@ -12,16 +12,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e862a59ef8c572845bd6ecbf017b421f, type: 3}
   m_Name: Wood
   m_EditorClassIdentifier: 
-  id: wood
+  _id: wood
   _displayName: Wood
-  _sprite: {fileID: 21300000, guid: ad093f4558d4d10438d6fcb157b07a39, type: 3}
+  _icon: {fileID: 21300000, guid: ad093f4558d4d10438d6fcb157b07a39, type: 3}
   _isStackable: 1
   _maxStack: 100
   _renderModel: {fileID: 3522609488548762159, guid: 5cd408668d728e042a03273352949421, type: 3}
   _category: 1
+  _flags: 4
   _properties:
-  - Key: fuel_power
-    FloatValue: 0
-    IntValue: 10
-    StringValue: 
-    ObjectReferenceValue: {fileID: 0}
+  - rid: 4414629887497994240
+  references:
+    version: 2
+    RefIds:
+    - rid: 4414629887497994240
+      type: {class: FloatItemProperty, ns: Milhouzer.InventorySystem, asm: Milhouzer.InventorySystem}
+      data:
+        _key: FUEL_POWER
+        _value: 5

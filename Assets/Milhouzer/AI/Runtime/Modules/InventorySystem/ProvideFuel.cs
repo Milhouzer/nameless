@@ -42,13 +42,15 @@ namespace Milhouzer.AI.Modules.InventorySystem
             }
 
             AddItemOperation operation = _energyBasedCrafter.ProvideInputFuel(slot.Stack);
-            Debug.Log("ProvideFuelTask " + operation.Result);
+            Debug.Log("Provided fuel " + operation.Added);
             switch(operation.Result)
             {
                 case AddItemOperationResult.AddedAll:
+                    _data.Inventory.RemoveItem(slot.Item);
                     taskRunState = TaskRunState.Finished;
                     break;
                 case AddItemOperationResult.PartiallyAdded:
+                    _data.Inventory.RemoveItem(slot.Item, operation.Added);
                     taskRunState = TaskRunState.Finished;
                     break;
                 case AddItemOperationResult.AddedNone:

@@ -5,6 +5,7 @@ namespace Milhouzer.InventorySystem.CraftingSystem
     using System.Collections.Generic;
     using System.Linq;
     using Milhouzer.Common.Interfaces;
+    using Milhouzer.Common.Utility;
     using UnityEngine;
     
     public class EnergyBasedCrafter : Crafter, IEnergyBasedCrafter, IInspectable
@@ -16,9 +17,14 @@ namespace Milhouzer.InventorySystem.CraftingSystem
         private InventoryBase _inputFuel;
         public InventoryBase InputFuel => _inputFuel;
 
-        public float RemainingPower { get; private set; }
+        private Timer powerTimer;
 
         public Transform WorldTransform => gameObject.transform;
+
+        private void OnEnable() {
+            
+            powerTimer = new Timer(0, TryStartCraft);
+        }
 
         private void Update() {
             Work(Time.deltaTime);
@@ -33,20 +39,20 @@ namespace Milhouzer.InventorySystem.CraftingSystem
         {
             if(IsCrafting)
             {
-                if(!TryBurnCurrentFuel(elapsedTime) && !BurnNewFuel(elapsedTime))
+                if(!TryBurnCurrentFuel() && !BurnNewFuel())
                 {
                     StopCraft();
                 }
             }
             else
             {
-                TryBurnCurrentFuel(elapsedTime);
+                TryBurnCurrentFuel();
             }
         }
 
-        private bool BurnNewFuel(float elapsedTime)
+        private bool BurnNewFuel()
         {
-            if(RemainingPower >= 0)
+            if(powerTimer.IsRunning)
                 return false;
 
             ItemSlot slot = _inputFuel.Slots.First();
@@ -55,18 +61,22 @@ namespace Milhouzer.InventorySystem.CraftingSystem
 
             IItemStack currentFuel = slot.Stack;
 
-            // ItemProperty<int> power = currentFuel.Item.Data.GetProperty<int>("fuel_power");
-            // RemainingPower = power.FloatValue - elapsedTime + RemainingPower;
+            FloatItemProperty power = currentFuel.Item.Data.GetProperty("FUEL_POWER") as FloatItemProperty;
+            if(power == null)
+                return false;
+
+            powerTimer.AddDuration(power.GetValue());
+            powerTimer.Start();
 
             return _inputFuel.RemoveItem(slot.Stack.Item).Result == RemoveItemOperationResult.RemovedAll;
         }
 
-        private bool TryBurnCurrentFuel(float elapsedTime)
+        private bool TryBurnCurrentFuel()
         {
-            if(RemainingPower <= 0)
+            if(!powerTimer.IsRunning)
                 return false;
 
-            RemainingPower -= elapsedTime;
+            powerTimer.Update();
             return true;
         }
 
@@ -84,10 +94,11 @@ namespace Milhouzer.InventorySystem.CraftingSystem
 
         protected override IEnumerator CraftProcess()
         {
-            Debug.Log("Process craft : " + (Progress + Time.deltaTime) + " with fuel power : " + RemainingPower);
+            Debug.Log("Process craft : " + (Progress + Time.deltaTime) + " with fuel power : " + powerTimer.Remaining);
+            
             while(Progress <= 3f)
             {
-                if(RemainingPower <= 0)
+                if(!powerTimer.IsRunning)
                 {
                     StopCraft();
                     yield break;
@@ -100,6 +111,25 @@ namespace Milhouzer.InventorySystem.CraftingSystem
             StopCraft();
         }
 
+        protected override CraftOperationResult Craft()
+        {
+            bool crafted = InventoryManager.Instance.CraftItem
+            (
+                _inputIngredients, 
+                _output,
+                RecipeDebug, 
+                Process
+            );
+
+            Debug.Log("Crafted " + RecipeDebug + " " +  crafted);
+            if(!crafted)
+            {
+                return CraftOperationResult.MissingIngredients;
+            }
+
+
+            return CraftOperationResult.Success;
+        }   
 
         public Dictionary<string, object> SerializeUIData()
         {

@@ -20,7 +20,7 @@ namespace Milhouzer.InventorySystem
 
         [SerializeField]
         private List<ItemSlot> _slots = new();
-        public ReadOnlyCollection<ItemSlot> Slots => _slots.AsReadOnly();
+        public List<ItemSlot> Slots => _slots;
 
         public event IInventory<ItemSlot, IItemStack>.AddItemEvent OnItemAdded;
         public event IInventory<ItemSlot, IItemStack>.RemoveItemEvent OnItemRemoved;
@@ -31,13 +31,9 @@ namespace Milhouzer.InventorySystem
 
             Restrictions = GetComponent<InventoryRestrictions>();
 
-            for(int i = 0; i < _maxSlots; i++)
+            for(int i = 0; i < startItems.Count; i++)
             {
-                ItemStack stack = new ItemStack(null, 0); 
-                if(i < startItems.Count)
-                {
-                    stack = new ItemStack(startItems[i].Data, startItems[i].Amount);
-                }
+                ItemStack stack = new ItemStack(startItems[i].Data, startItems[i].Amount);
                 _slots.Add(new ItemSlot(stack, i));
             }
             startItems.Clear();
@@ -50,47 +46,46 @@ namespace Milhouzer.InventorySystem
 
         public AddItemOperation AddItem(IItem item)
         {
+            if(item == null)
+            {
+                Debug.LogError("Item was null");
+                return AddItemOperation.AddedNone();
+            }
+
             if(!CanAddItem(item))
                 return AddItemOperation.AddedNone();
 
-            ItemSlot slot = FindSlot(item);
-
-            if(slot == null)
-                return AddItemOperation.AddedNone();
-
+            ItemSlot slot = this.FindSlot(item);
             return AddItem(slot, item);
         }
 
         public AddItemOperation AddItem(IItemStack stack)
         {
+            if(stack.Item == null)
+            {
+                Debug.LogError("Item was null");
+                return AddItemOperation.AddedNone();
+            }
+
             if(!CanAddItem(stack.Item))
                 return AddItemOperation.AddedNone();
 
-            ItemSlot slot = FindSlot(stack);
-            
-            if(slot == null)
-                return AddItemOperation.AddedNone();
-
+            ItemSlot slot = this.FindSlot(stack);
             return AddItem(slot, stack);
-        }
-
-        public AddItemOperation AddItem(ItemSlot slot, IItemStack stack)
-        {
-
-            if(!CanAddItem(stack.Item))
-                return AddItemOperation.AddedNone();
-
-            AddItemOperation operation = slot.Stack.Add(stack.Amount);
-        
-            ItemOperationEventData data = new ItemOperationEventData(slot, stack.Item, operation.Added);
-            OnItemAdded?.Invoke(data);
-            
-            return operation;
         }
 
         public AddItemOperation AddItem(ItemSlot slot, IItem item)
         {
-            if(!CanAddItem(item))
+            if(item == null)
+            {
+                Debug.LogError("Item was null");
+                return AddItemOperation.AddedNone();
+            }
+
+            if(slot == null)
+                slot = CreateSlot(item);
+                
+            if(slot == null || !CanAddItem(item))
                 return AddItemOperation.AddedNone();
 
             AddItemOperation operation = slot.Stack.Add(1);
@@ -101,9 +96,55 @@ namespace Milhouzer.InventorySystem
             return operation;
         }
 
+        public AddItemOperation AddItem(ItemSlot slot, IItemStack stack)
+        {
+            if(stack.Item == null)
+            {
+                Debug.LogError("Item was null");
+                return AddItemOperation.AddedNone();
+            }
+
+            if(slot == null)
+                slot = CreateSlot(stack.Item);
+                
+            if(slot == null || !CanAddItem(stack.Item))
+                return AddItemOperation.AddedNone();
+
+            AddItemOperation operation = slot.Stack.Add(stack.Amount);
+        
+            ItemOperationEventData data = new ItemOperationEventData(slot, stack.Item, operation.Added);
+            OnItemAdded?.Invoke(data);
+            
+            return operation;
+        }
+
+        private ItemSlot CreateSlot(IItem item)
+        {
+            if(_slots.Count < MaxSlots)
+            {
+                ItemSlot slot =  new ItemSlot(new ItemStack(item.Data, 0), _slots.Count);
+                _slots.Add(slot);
+                return slot;
+            }
+
+            return null;
+        }
+
+        private ItemSlot CreateSlot(IItemStack stack)
+        {
+            if(_slots.Count < MaxSlots)
+            {
+                ItemSlot slot = new ItemSlot(stack, _slots.Count - 1);
+                _slots.Add(slot);
+                return slot;
+            }
+
+            return null;
+        }
+
         private bool CanAddItem(IItem item)
         {
-            if(Restrictions != null && !Restrictions.SatisfyRestrictions(this, item.Data))
+            if(item == null || Restrictions != null && !Restrictions.SatisfyRestrictions(this, item.Data))
             {
                 Debug.Log("Can't add item : " + item + " on " + transform);
                 return false;
@@ -112,9 +153,30 @@ namespace Milhouzer.InventorySystem
             return true;
         }
 
+        /// <summary>
+        /// Remove item completely
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>//
         public RemoveItemOperation RemoveItem(IItem item)
         {
-            ItemSlot slot = FindSlot(item);
+            ItemSlot slot = this.FindSlot(item);
+            
+            if(slot == null)
+                return RemoveItemOperation.RemovedNone();
+
+            RemoveItemOperation operation =  new RemoveItemOperation(RemoveItemOperationResult.RemovedAll, slot.Stack.Amount);
+            ItemOperationEventData data = new ItemOperationEventData(slot, item, slot.Stack.Amount);
+
+            _slots.Remove(slot);
+
+            OnItemRemoved?.Invoke(data);
+            return operation;
+        }
+
+        public RemoveItemOperation RemoveItem(IItem item, int amount)
+        {
+            ItemSlot slot = this.FindSlot(item);
             
             if(slot == null)
                 return RemoveItemOperation.RemovedNone();
@@ -127,27 +189,17 @@ namespace Milhouzer.InventorySystem
             return operation;
         }
 
-        public RemoveItemOperation RemoveItem(IItemStack stack)
-        {
-            ItemSlot slot = FindSlot(stack);
-            
-            if(slot == null)
-                return RemoveItemOperation.RemovedNone();
-
-            RemoveItemOperation operation = slot.Stack.Remove(stack.Amount);
-
-            ItemOperationEventData data = new ItemOperationEventData(slot, stack.Item, operation.Removed);
-            OnItemRemoved?.Invoke(data);
-
-            return operation;
-        }
-
-        public RemoveItemOperation RemoveItem(ItemSlot slot)
+        /// <summary>
+        /// Remove item completely from given slot.
+        /// </summary>
+        /// <param name="slot"></param>
+        /// <returns></returns>
+        private RemoveItemOperation RemoveItem(ItemSlot slot)
         {
             RemoveItemOperation operation = slot.Stack.Remove(1);
             
             /// <TODO>
-            /// REPLACE NULL
+            /// REPLACE NULL. However this implies to store the item before removing it...
             /// </TODO>
             ItemOperationEventData data = new ItemOperationEventData(slot, null, operation.Removed);
             OnItemRemoved?.Invoke(data);
@@ -155,7 +207,12 @@ namespace Milhouzer.InventorySystem
             return operation;
         }
 
-        public RemoveItemOperation RemoveSlot(int i)
+        /// <summary>
+        /// Remove item at slot i
+        /// </summary>
+        /// <param name="i"></param>
+        /// <returns></returns>
+        private RemoveItemOperation RemoveSlot(int i)
         {
             ItemSlot slot = _slots[i];
             
@@ -178,7 +235,7 @@ namespace Milhouzer.InventorySystem
         
         public GameObject DropItem(IItem item)
         {
-            ItemSlot slot = FindSlot(item);
+            ItemSlot slot = this.FindSlot(item);
             Vector3 dropPos = gameObject.transform.position + transform.forward;
             
             GameObject droppedItem = InventoryManager.DropItem(slot.Stack, dropPos);
@@ -190,7 +247,7 @@ namespace Milhouzer.InventorySystem
 
         public GameObject DropItem(IItemStack stack)
         {
-            ItemSlot slot = FindSlot(stack);
+            ItemSlot slot = this.FindSlot(stack);
             
             Vector3 dropPos = gameObject.transform.position + transform.forward;
             
@@ -199,43 +256,6 @@ namespace Milhouzer.InventorySystem
             RemoveItem(slot);
 
             return droppedItem;
-        }
-
-
-        public ItemSlot FindSlot(IItemStack stack)
-        {
-            return FindSlot(stack?.Item);
-        }
-
-        public ItemSlot FindSlot(IItem item)
-        {
-            if(item == null || item.Data == null)
-                return null;
-
-            ItemSlot firstEmpty = null;
-            int index = 0;
-
-            for(int i = 0; i < Slots.Count; i++)
-            {
-                ItemSlot slot = Slots[i];
-                if(slot.Data == null)
-                {
-                    if(firstEmpty == null)
-                    {
-                        firstEmpty = slot;
-                        index = i;
-                    }
-                }else
-                {
-                    if(item.Data.ID == slot.Stack.Item.Data.ID)
-                        return slot;
-                }
-            }
-
-            // Update item stack on slot.
-            _slots[index] = new ItemSlot(new ItemStack(item.Data, 0), index);
-            
-            return _slots[index];
         }
 
         /// <TODO>
@@ -255,12 +275,6 @@ namespace Milhouzer.InventorySystem
 
             return builder.ToString();
         }
-
-        public ItemSlot FindItem(Predicate<ItemSlot> predicate)
-        {
-            return _slots.Find(predicate);
-        }
-        
 
         public Dictionary<string, object> SerializeUIData()
         {
