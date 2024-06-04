@@ -34,7 +34,7 @@ namespace Milhouzer.AI.Modules.InventorySystem
 
         public override TaskRunState Execute()
         {
-            ItemSlot slot = InventoryUtility.FindItemByCategory(_data.Inventory,  _data.Category);
+            IItemSlot slot = InventoryUtility.FindItemByCategory(_data.Inventory,  _data.Category);
             if(slot == null)
             {
                 Debug.Log("no fueld found on " + _data.Inventory);
@@ -86,14 +86,14 @@ namespace Milhouzer.AI.Modules.InventorySystem
         public new string Name => _name;
         
         [HideInInspector]
-        public InventoryBase Inventory;
+        public IInventory Inventory;
         [SerializeField]
         public ItemCategory Category;
 
         public override void GetComponentsReferences(GameObject target)
         {
             Debug.Log("set data " + target);
-            Inventory = target.GetComponent<InventoryBase>();
+            Inventory = target.GetComponent<IInventory>();
         }
     }
 }

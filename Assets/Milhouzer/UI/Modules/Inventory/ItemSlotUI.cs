@@ -13,16 +13,16 @@ namespace Milhouzer.UI.InventorySystem
         [SerializeField]
         protected TextMeshProUGUI Stack;
 
-        protected ItemSlot itemSlot;
+        protected IItemSlot itemSlot;
 
-        public void SetItem(ItemSlot item)
+        public void SetItem(IItemSlot item)
         {
             itemSlot = item;
             Refresh();
             OnSetItem(item);
         }
 
-        protected virtual void OnSetItem(ItemSlot item)
+        protected virtual void OnSetItem(IItemSlot item)
         {
 
         }
@@ -30,14 +30,14 @@ namespace Milhouzer.UI.InventorySystem
 
         protected virtual void Refresh()
         {
-            if(itemSlot == null || itemSlot.Stack == null || itemSlot.Data == null)
+            if(itemSlot == null || itemSlot.Stack == null || itemSlot.Item.Data == null)
             {
                 Reset();
                 return;
             }
 
             Stack.text = itemSlot.Stack.Amount.ToString();
-            Icon.sprite = itemSlot.Data.Sprite;
+            Icon.sprite = itemSlot.Item.Data.Sprite;
         }
 
         protected virtual void Reset()

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Milhouzer.UI.InventorySystem
 {
-    public class InventoryPanel : UIPanel<InventoryBase>
+    public class InventoryPanel : UIPanel<IInventory>
     {
         [SerializeField]
         protected Transform slotsContainer;
@@ -20,7 +20,7 @@ namespace Milhouzer.UI.InventorySystem
         private bool dynamic;
         protected List<ItemSlotUI> slots = new();
     
-        protected InventoryBase _inventory;
+        protected IInventory _inventory;
 
         protected override void Awake()
         {
@@ -48,7 +48,7 @@ namespace Milhouzer.UI.InventorySystem
             base.SetVisibility(value);
         }
 
-        protected override void OnInitialize(InventoryBase inventory)
+        protected override void OnInitialize(IInventory inventory)
         {
             if(_inventory != null)
             {
@@ -91,9 +91,9 @@ namespace Milhouzer.UI.InventorySystem
             }
             
 
-            foreach(ItemSlot itemSlot in _inventory.Slots)
+            foreach(IItemSlot itemSlot in _inventory.Slots)
             {
-                if(itemSlot.Data == null)
+                if(itemSlot.Item.Data == null)
                     continue;
 
                 ItemSlotUI slotUI = slots[itemSlot.Index - 1];
@@ -129,12 +129,12 @@ namespace Milhouzer.UI.InventorySystem
                     slots.Add(slot);
                 }
 
-                foreach(ItemSlot itemSlot in _inventory.Slots)
+                foreach(IItemSlot itemSlot in _inventory.Slots)
                 {
                     if(itemSlot == null)
                         continue;
                     
-                    if(itemSlot.Data == null)
+                    if(itemSlot.Item.Data == null)
                         continue;
 
                     ItemSlotUI slotUI = slots[itemSlot.Index];
@@ -148,7 +148,7 @@ namespace Milhouzer.UI.InventorySystem
                 {
                     if(j < _inventory.Slots.Count)
                     {
-                        ItemSlot slot = _inventory.Slots[j];
+                        IItemSlot slot = _inventory.Slots[j];
                             
                         Debug.Log(slot.Index + " " + slots.Count);
                         ItemSlotUI slotUI = slots[slot.Index];

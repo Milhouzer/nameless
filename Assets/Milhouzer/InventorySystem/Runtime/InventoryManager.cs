@@ -14,34 +14,21 @@ namespace Milhouzer.InventorySystem
         private GameObject DROPPED_ITEM_BASE;
         public ItemDatabase Items;
         public CraftDatabase Crafts;
-
-        public static GameObject DisplayItem(IItemStack item, Vector3 pos)
-        {
-            if(item == null)
-            {
-                return null;
-            }
-
-            GameObject displayedItem = Instantiate(item.Item.Data.RenderModel);
-            displayedItem.transform.position = pos;
-
-            return displayedItem;
-        }
         
-        public static GameObject DisplayItem(IItemStack item, Vector3 pos, Transform parent)
+        public static GameObject RenderItemModel(IItem item, Vector3 pos, Transform parent)
         {
             if(item == null)
             {
                 return null;
             }
             
-            GameObject displayedItem = Instantiate(item.Item.Data.RenderModel, parent);
+            GameObject displayedItem = Instantiate(item.Data.RenderModel, parent);
             displayedItem.transform.position = pos;
 
             return displayedItem;
         }
 
-        public static GameObject DropItem(IItemStack item, Transform parent)
+        internal static GameObject DropItem(IItemStack item, Transform parent)
         {
             if(item == null)
             {
@@ -56,7 +43,7 @@ namespace Milhouzer.InventorySystem
             return droppedItemGO;
         }
 
-        public static GameObject DropItem(IItemStack item, Vector3 pos)
+        internal static GameObject DropItem(IItemStack item, Vector3 pos)
         {
             if(item == null)
             {
@@ -73,7 +60,7 @@ namespace Milhouzer.InventorySystem
             return droppedItemGO;
         }
 
-        public static GameObject DropItem(IItemStack item, Vector3 pos, Quaternion rot)
+        internal static GameObject DropItem(IItemStack item, Vector3 pos, Quaternion rot)
         {
             if(item == null)
             {
@@ -89,7 +76,7 @@ namespace Milhouzer.InventorySystem
         }
 
 
-        public static GameObject DropItem(IItemStack item, Vector3 pos, Quaternion rot, Transform parent)
+        internal static GameObject DropItem(IItemStack item, Vector3 pos, Quaternion rot, Transform parent)
         {
             if(item == null)
             {
@@ -105,15 +92,15 @@ namespace Milhouzer.InventorySystem
         }
 
 
-        public bool CanCraftItem(InventoryBase inventory, string item, CraftingProcess process)
+        internal bool CanCraftItem(IInventory inventory, string item, CraftingProcess process)
         {
             if(!Crafts.CookRecipes.ContainsKey(item))
                 return false;
 
             List<Ingredient> ingredients = new();
-            foreach(ISlot slot in inventory.Slots)
+            foreach(IItemSlot slot in inventory.Slots)
             {
-                ingredients.Add(new Ingredient(slot.Stack.Item.Data.ID, slot.Stack.Amount));
+                ingredients.Add(new Ingredient(slot.Item.Data.ID, slot.Stack.Amount));
             }
 
             List<Ingredient> needed = Crafts.CookRecipes[item];
@@ -126,7 +113,7 @@ namespace Milhouzer.InventorySystem
             return true;
         }
         
-        public bool CraftItem(InventoryBase inventory, InventoryBase output, string item, CraftingProcess process)
+        internal bool CraftItem(IInventory inventory, IInventory output, string item, CraftingProcess process)
         {
             if(!CanCraftItem(inventory, item, process))
                 return false;
@@ -134,14 +121,14 @@ namespace Milhouzer.InventorySystem
             List<Ingredient> needed = Crafts.CookRecipes[item];
 
             IItem crafted =  CreateItem(item);
-            AddItemOperation op = output.AddItem(crafted);
+            AddItemOperation op = output.AddItem(new ItemStack(crafted.Data, 1));
 
             if(op.Result == AddItemOperationResult.AddedNone)
                 return false;
 
             foreach(Ingredient ingredient in needed)
             {
-                IItem ingredientItem = inventory.FindItem(x => x.Data.ID == ingredient.name);
+                IItem ingredientItem = inventory.FindItem(x => x.Stack.Item.Data.ID == ingredient.name);
 
                 RemoveItemOperation operation = inventory.RemoveItem(ingredientItem);
             }

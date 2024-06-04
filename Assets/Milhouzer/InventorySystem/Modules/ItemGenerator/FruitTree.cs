@@ -42,27 +42,27 @@ namespace Milhouzer.InventorySystem
             return GenerationSpots[_items.Count].position;
         }
 
-        public AddItemOperation Hold(IItemStack item)
+        public AddItemOperation Hold(IItemStack stack)
         {          
-            GameObject itemGO = InventoryManager.DisplayItem(item, GetGenerationPosition(), transform);
+            GameObject itemGO = InventoryManager.RenderItemModel(stack.Item, GetGenerationPosition(), transform);
             
-            _items.Add(item);  
+            _items.Add(stack);  
             _instanciatedItems.Add(itemGO);
 
-            return new AddItemOperation(AddItemOperationResult.AddedAll, item.Amount);
+            return new AddItemOperation(AddItemOperationResult.AddedAll, stack.Amount);
         }
 
-        public AddItemOperation Hold(List<IItemStack> items)
+        public AddItemOperation Hold(List<IItemStack> stacks)
         {
-            foreach (IItemStack item in items)
+            foreach (IItemStack stack in stacks)
             {
-                Hold(item);
+                Hold(stack);
             }
 
-            return new AddItemOperation(AddItemOperationResult.AddedAll, items[0].Amount);
+            return new AddItemOperation(AddItemOperationResult.AddedAll, stacks[0].Amount);
         }
 
-        public RemoveItemOperation Pickup(InventoryBase inventory)
+        public RemoveItemOperation Pickup(IInventory inventory)
         {
             int elected = ElectStackForPicking();
             if(elected == -1)

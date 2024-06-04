@@ -7,9 +7,9 @@ namespace Milhouzer.InventorySystem.Restrictions
     public class IncomingInventoryRestriction : AddItemRestriction
     {
         [SerializeField]
-        List<InventoryBase> AcceptedInventories = new();
+        List<IInventory> AcceptedInventories = new();
 
-        public override bool IsSatisfied(InventoryBase inventory, IItemData item)
+        public override bool IsSatisfied(IInventory inventory, IItemData item)
         {
             return AcceptedInventories.Contains(inventory);
         }

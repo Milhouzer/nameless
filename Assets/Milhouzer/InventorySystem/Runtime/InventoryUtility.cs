@@ -5,17 +5,20 @@ namespace Milhouzer.InventorySystem
 {
     public static class InventoryUtility
     {
-        public static ItemSlot FindItemByCategory(this InventoryBase inventory, ItemCategory category)
+        public static IItemSlot FindItemByCategory(this IInventory inventory, ItemCategory category)
         {
-            return inventory.Slots.First(x => x.Data.Category == category);
+            /// <TODO>
+            /// Way too many nested properties, make intermediate interface IItemSlot : ISlot<IItem>
+            /// </TODO>
+            return inventory.Slots.First(x => x.Stack.Item.Data.Category == category);
         }
 
-        public static IItem FindItem(this InventoryBase inventory, Predicate<ItemSlot> predicate)
+        public static IItem FindItem(this IInventory inventory, Predicate<IItemSlot> predicate)
         {
-            return inventory.Slots.Find(predicate)?.Item;
+            return inventory.Slots.Find(predicate)?.Stack.Item;
         }
 
-        public static ItemSlot FindSlot(this InventoryBase inventory, IItemStack stack)
+        public static IItemSlot FindSlot(this IInventory inventory, IItemStack stack)
         {
             return inventory.FindSlot(stack?.Item);
         }
@@ -26,13 +29,13 @@ namespace Milhouzer.InventorySystem
         /// <param name="inventory"></param>
         /// <param name="item"></param>
         /// <returns></returns>
-        public static ItemSlot FindSlot(this InventoryBase inventory, IItem item)
+        public static IItemSlot FindSlot(this IInventory inventory, IItem item)
         {
             if(item == null || item.Data == null)
                 return null;
 
-            ItemSlot slot =inventory.Slots.Find(x => x.Data.ID == item.Data.ID);
-            return slot;
+            return inventory.Slots.Find(x => x.Stack.Item.Data.ID == item.Data.ID);
+            // return slot;
             
             // ItemSlot firstEmpty = null;
             // int index = 0;
@@ -49,7 +52,7 @@ namespace Milhouzer.InventorySystem
             //         }
             //     }else
             //     {
-            //         if(item.Data.ID == slot.Stack.Item.Data.ID)
+            //         if(item.Data.ID == slot.Item.Data.ID)
             //             return slot;
             //     }
             // }

@@ -38,7 +38,7 @@ namespace Milhouzer.InventorySystem
             return new AddItemOperation(AddItemOperationResult.AddedAll, items[0].Amount);
         }
 
-        public RemoveItemOperation Pickup(InventoryBase inventory)
+        public RemoveItemOperation Pickup(IInventory inventory)
         {
             AddItemOperation operation = inventory.AddItem(_items[0]);
 

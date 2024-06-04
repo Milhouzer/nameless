@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Milhouzer.InventorySystem
 {
-    public class InventoryBase : MonoBehaviour, IInventory<ItemSlot, IItemStack>
+    public class InventoryBase : MonoBehaviour, IInventory
     {
         public bool IsEmpty => _slots.Count == 0;
 
@@ -19,11 +19,11 @@ namespace Milhouzer.InventorySystem
         private List<ItemStackDefinition> startItems = new();
 
         [SerializeField]
-        private List<ItemSlot> _slots = new();
-        public List<ItemSlot> Slots => _slots;
+        private List<IItemSlot> _slots = new();
+        public List<IItemSlot> Slots => _slots;
 
-        public event IInventory<ItemSlot, IItemStack>.AddItemEvent OnItemAdded;
-        public event IInventory<ItemSlot, IItemStack>.RemoveItemEvent OnItemRemoved;
+        public event IInventory.AddItemEvent OnItemAdded;
+        public event IInventory.RemoveItemEvent OnItemRemoved;
 
         InventoryRestrictions Restrictions;
 
@@ -44,20 +44,20 @@ namespace Milhouzer.InventorySystem
         /// </todo>
         #region ITEM OPERATIONS
 
-        public AddItemOperation AddItem(IItem item)
-        {
-            if(item == null)
-            {
-                Debug.LogError("Item was null");
-                return AddItemOperation.AddedNone();
-            }
+        // private AddItemOperation AddItem(IItem item)
+        // {
+        //     if(item == null)
+        //     {
+        //         Debug.LogError("Item was null");
+        //         return AddItemOperation.AddedNone();
+        //     }
 
-            if(!CanAddItem(item))
-                return AddItemOperation.AddedNone();
+        //     if(!CanAddItem(item))
+        //         return AddItemOperation.AddedNone();
 
-            ItemSlot slot = this.FindSlot(item);
-            return AddItem(slot, item);
-        }
+        //     ItemSlot slot = this.FindSlot(item);
+        //     return AddItem(slot, item);
+        // }
 
         public AddItemOperation AddItem(IItemStack stack)
         {
@@ -70,33 +70,33 @@ namespace Milhouzer.InventorySystem
             if(!CanAddItem(stack.Item))
                 return AddItemOperation.AddedNone();
 
-            ItemSlot slot = this.FindSlot(stack);
+            IItemSlot slot = this.FindSlot(stack);
             return AddItem(slot, stack);
         }
 
-        public AddItemOperation AddItem(ItemSlot slot, IItem item)
-        {
-            if(item == null)
-            {
-                Debug.LogError("Item was null");
-                return AddItemOperation.AddedNone();
-            }
+        // private AddItemOperation AddItem(IItemSlot slot, IItem item)
+        // {
+        //     if(item == null)
+        //     {
+        //         Debug.LogError("Item was null");
+        //         return AddItemOperation.AddedNone();
+        //     }
 
-            if(slot == null)
-                slot = CreateSlot(item);
+        //     if(slot == null)
+        //         slot = CreateSlot(item);
                 
-            if(slot == null || !CanAddItem(item))
-                return AddItemOperation.AddedNone();
+        //     if(slot == null || !CanAddItem(item))
+        //         return AddItemOperation.AddedNone();
 
-            AddItemOperation operation = slot.Stack.Add(1);
+        //     AddItemOperation operation = slot.Stack.Add(1);
 
-            ItemOperationEventData data = new ItemOperationEventData(slot, item, operation.Added);
-            OnItemAdded?.Invoke(data);
+        //     ItemOperationEventData data = new ItemOperationEventData(slot, item, operation.Added);
+        //     OnItemAdded?.Invoke(data);
 
-            return operation;
-        }
+        //     return operation;
+        // }
 
-        public AddItemOperation AddItem(ItemSlot slot, IItemStack stack)
+        private AddItemOperation AddItem(IItemSlot slot, IItemStack stack)
         {
             if(stack.Item == null)
             {
@@ -130,17 +130,17 @@ namespace Milhouzer.InventorySystem
             return null;
         }
 
-        private ItemSlot CreateSlot(IItemStack stack)
-        {
-            if(_slots.Count < MaxSlots)
-            {
-                ItemSlot slot = new ItemSlot(stack, _slots.Count - 1);
-                _slots.Add(slot);
-                return slot;
-            }
+        // private ItemSlot CreateSlot(IItemStack stack)
+        // {
+        //     if(_slots.Count < MaxSlots)
+        //     {
+        //         ItemSlot slot = new ItemSlot(stack, _slots.Count - 1);
+        //         _slots.Add(slot);
+        //         return slot;
+        //     }
 
-            return null;
-        }
+        //     return null;
+        // }
 
         private bool CanAddItem(IItem item)
         {
@@ -160,7 +160,7 @@ namespace Milhouzer.InventorySystem
         /// <returns></returns>//
         public RemoveItemOperation RemoveItem(IItem item)
         {
-            ItemSlot slot = this.FindSlot(item);
+            IItemSlot slot = this.FindSlot(item);
             
             if(slot == null)
                 return RemoveItemOperation.RemovedNone();
@@ -176,7 +176,7 @@ namespace Milhouzer.InventorySystem
 
         public RemoveItemOperation RemoveItem(IItem item, int amount)
         {
-            ItemSlot slot = this.FindSlot(item);
+            IItemSlot slot = this.FindSlot(item);
             
             if(slot == null)
                 return RemoveItemOperation.RemovedNone();
@@ -194,7 +194,7 @@ namespace Milhouzer.InventorySystem
         /// </summary>
         /// <param name="slot"></param>
         /// <returns></returns>
-        private RemoveItemOperation RemoveItem(ItemSlot slot)
+        private RemoveItemOperation RemoveItem(IItemSlot slot)
         {
             RemoveItemOperation operation = slot.Stack.Remove(1);
             
@@ -214,12 +214,12 @@ namespace Milhouzer.InventorySystem
         /// <returns></returns>
         private RemoveItemOperation RemoveSlot(int i)
         {
-            ItemSlot slot = _slots[i];
+            IItemSlot slot = _slots[i];
             
             /// <TODO>
             /// REPLACE NULL
             /// </TODO>
-            ItemOperationEventData data = new ItemOperationEventData(slot, slot.Stack.Item, slot.Stack.Amount);
+            ItemOperationEventData data = new ItemOperationEventData(slot, slot.Item, slot.Stack.Amount);
             OnItemRemoved?.Invoke(data);
 
             int removed = slot.Stack.Amount;
@@ -233,30 +233,30 @@ namespace Milhouzer.InventorySystem
         #endregion
 
         
-        public GameObject DropItem(IItem item)
-        {
-            ItemSlot slot = this.FindSlot(item);
-            Vector3 dropPos = gameObject.transform.position + transform.forward;
+        // public GameObject DropItem(IItem item)
+        // {
+        //     ItemSlot slot = this.FindSlot(item);
+        //     Vector3 dropPos = gameObject.transform.position + transform.forward;
             
-            GameObject droppedItem = InventoryManager.DropItem(slot.Stack, dropPos);
+        //     GameObject droppedItem = InventoryManager.DropItem(slot.Stack, dropPos);
 
-            RemoveItem(slot);
+        //     RemoveItem(slot);
 
-            return droppedItem;
-        }
+        //     return droppedItem;
+        // }
 
-        public GameObject DropItem(IItemStack stack)
-        {
-            ItemSlot slot = this.FindSlot(stack);
+        // public GameObject DropItem(IItemStack stack)
+        // {
+        //     ItemSlot slot = this.FindSlot(stack);
             
-            Vector3 dropPos = gameObject.transform.position + transform.forward;
+        //     Vector3 dropPos = gameObject.transform.position + transform.forward;
             
-            GameObject droppedItem = InventoryManager.DropItem(slot.Stack, dropPos);
+        //     GameObject droppedItem = InventoryManager.DropItem(slot.Stack, dropPos);
 
-            RemoveItem(slot);
+        //     RemoveItem(slot);
 
-            return droppedItem;
-        }
+        //     return droppedItem;
+        // }
 
         /// <TODO>
         /// Delete
@@ -267,10 +267,10 @@ namespace Milhouzer.InventorySystem
             StringBuilder builder = new StringBuilder();
             foreach(ItemSlot slot in _slots)
             {
-                if(slot.Data == null)
+                if(slot.Item.Data == null)
                     continue;
 
-                builder.AppendLine(slot.Index.ToString() + " : " + slot.Data.ID + ", " + slot.Stack.Amount);
+                builder.AppendLine(slot.Index.ToString() + " : " + slot.Item.Data.ID + ", " + slot.Stack.Amount);
             }
 
             return builder.ToString();

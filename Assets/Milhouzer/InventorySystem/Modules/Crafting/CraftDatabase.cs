@@ -77,12 +77,12 @@ namespace Milhouzer.InventorySystem
         /// <TODO>
         /// Write other methods like this, for instance FindRecipe(List<IItemStack>), etc.
         /// </TODO>
-        public List<string> FindRecipes(IInventory<ISlot, IItemStack> inventory, CraftingProcess process)
+        public List<string> FindRecipes(IInventory inventory, CraftingProcess process)
         {
             List<Ingredient> ingredients = new();
-            foreach(ISlot slot in inventory.Slots)
+            foreach(IItemSlot slot in inventory.Slots)
             {
-                ingredients.Add(new Ingredient(slot.Stack.Item.Data.ID, slot.Stack.Amount));
+                ingredients.Add(new Ingredient(slot.Item.Data.ID, slot.Stack.Amount));
             }
             return FindRecipes(ingredients, process);
         }

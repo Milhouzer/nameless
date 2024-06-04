@@ -13,11 +13,11 @@ namespace Milhouzer.InventorySystem.CraftingSystem
         /* ====== COMPONENT ====== */
         
         [SerializeField]
-        protected InventoryBase _inputIngredients;
-        public InventoryBase InputIngredients => _inputIngredients;
+        protected IInventory _inputIngredients;
+        public IInventory InputIngredients => _inputIngredients;
         [SerializeField]
-        protected InventoryBase _output;
-        public InventoryBase Output => _output;
+        protected IInventory _output;
+        public IInventory Output => _output;
 
         [SerializeField]
         protected CraftingProcess _process;
@@ -39,16 +39,17 @@ namespace Milhouzer.InventorySystem.CraftingSystem
             return operation;
         }
 
-        public virtual RemoveItemOperation PickupOutput(InventoryBase inventory)
+        public virtual RemoveItemOperation PickupOutput(IInventory inventory)
         {
+            RemoveItemOperation result = new RemoveItemOperation(RemoveItemOperationResult.RemovedAll, 0);
             int left = _output.Slots.Count;
             for (int i = _output.Slots.Count - 1; i >= 0 ; i--)
             {
                 IItemStack stack = _output.Slots[i].Stack;
                 AddItemOperation operation = inventory.AddItem(stack);
-                if(operation.Result == AddItemOperationResult.AddedAll)
+                if(operation.Result != AddItemOperationResult.AddedAll)
                 {
-                    _output.RemoveItem(_output.Slots[i].Item);
+                    result.CombineOperation(_output.RemoveItem(stack.Item));
                     left--;
                 }
             }

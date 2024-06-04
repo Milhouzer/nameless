@@ -9,11 +9,11 @@ namespace Milhouzer.InventorySystem.Restrictions
         [SerializeReference]
         public List<AddItemRestriction> Restrictions;
 
-        public bool SatisfyRestrictions(InventoryBase inventoryBase, IItemData data)
+        public bool SatisfyRestrictions(IInventory inventory, IItemData data)
         {
             foreach(AddItemRestriction restriction in Restrictions)
             {
-                if(!restriction.IsSatisfied(inventoryBase, data))
+                if(!restriction.IsSatisfied(inventory, data))
                     return false;
             }
 

@@ -1,12 +1,11 @@
 namespace Milhouzer.InventorySystem
 {
-    public interface ISlot
+    public interface IItemSlot : ISlot<IItemStack>
     {
-        public int Index { get; }
-        public IItemStack Stack { get; }
+        public IItem Item { get; }
     }
     
-    public interface ISlot<T> where T : IItemStack
+    public interface ISlot<T>
     {
         public int Index { get; }
         public T Stack { get; }

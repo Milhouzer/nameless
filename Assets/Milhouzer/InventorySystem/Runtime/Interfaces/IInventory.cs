@@ -6,29 +6,24 @@ using UnityEngine;
 
 namespace Milhouzer.InventorySystem
 {
-    public interface IInventory<TSlot, TStack> : IUIDataSerializer
-     where TSlot : ISlot 
-     where TStack : IItemStack
+    public interface IInventory : IUIDataSerializer
     {
         ////// PROPERTIES //////
         
         public bool IsEmpty { get; }
         public int MaxSlots { get; }
-        public List<TSlot> Slots { get; }
+        public List<IItemSlot> Slots { get; }
 
 
         ////// METHODS //////
         
-        public AddItemOperation AddItem(IItem item);
-        public AddItemOperation AddItem(TStack stack);
-        public AddItemOperation AddItem(TSlot slot, TStack stack);
-        public AddItemOperation AddItem(TSlot slot, IItem item);
+        public AddItemOperation AddItem(IItemStack stack);
 
         public RemoveItemOperation RemoveItem(IItem item);
         public RemoveItemOperation RemoveItem(IItem item, int amount);
 
-        public GameObject DropItem(IItem item);
-        public GameObject DropItem(TStack stack);
+        // public GameObject DropItem(IItem item);
+        // public GameObject DropItem(TStack stack);
 
 
         ////// EVENTS //////
@@ -41,14 +36,14 @@ namespace Milhouzer.InventorySystem
 
     public struct ItemOperationEventData
     {
-        public ItemOperationEventData(ISlot slot, IItem item, int amount)
+        public ItemOperationEventData(IItemSlot slot, IItem item, int amount)
         {
             Slot = slot;
             Item = item;
             Amount = amount;
         }
 
-        public ISlot Slot { get; private set; }
+        public IItemSlot Slot { get; private set; }
         public IItem Item { get; private set; }
         public int Amount { get; private set; }
     }

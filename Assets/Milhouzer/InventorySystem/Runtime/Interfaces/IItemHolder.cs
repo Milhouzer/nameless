@@ -11,7 +11,7 @@ namespace Milhouzer.InventorySystem
         
         AddItemOperation Hold(IItemStack item);
         AddItemOperation Hold(List<IItemStack> items);
-        RemoveItemOperation Pickup(InventoryBase inventory);
+        RemoveItemOperation Pickup(IInventory inventory);
 
         public delegate void PickUpEvent(/*ItemOperationEventData eventData*/);
         public event PickUpEvent OnPickedUp;

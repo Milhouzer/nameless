@@ -78,7 +78,7 @@ namespace Milhouzer.UI
             }
             else
             {
-                InventoryBase inventory = EntitiesManager.Instance.PossessedEntity?.GameObjectRef.GetComponent<InventoryBase>();
+                IInventory inventory = EntitiesManager.Instance.PossessedEntity?.GameObjectRef.GetComponent<IInventory>();
                 if(inventory != null)
                 {
                     CreatePanel(inventory);

@@ -14,8 +14,8 @@ namespace Milhouzer.InventorySystem.CraftingSystem
         [Header("EnergyBasedCrafter section")]
         /* ====== COMPONENT ====== */
         [SerializeField]
-        private InventoryBase _inputFuel;
-        public InventoryBase InputFuel => _inputFuel;
+        private IInventory _inputFuel;
+        public IInventory InputFuel => _inputFuel;
 
         private Timer powerTimer;
 
@@ -55,7 +55,7 @@ namespace Milhouzer.InventorySystem.CraftingSystem
             if(powerTimer.IsRunning)
                 return false;
 
-            ItemSlot slot = _inputFuel.Slots.First();
+            IItemSlot slot = _inputFuel.Slots.First();
             if(slot == null)
                 return false;
 
@@ -68,7 +68,7 @@ namespace Milhouzer.InventorySystem.CraftingSystem
             powerTimer.AddDuration(power.GetValue());
             powerTimer.Start();
 
-            return _inputFuel.RemoveItem(slot.Stack.Item).Result == RemoveItemOperationResult.RemovedAll;
+            return _inputFuel.RemoveItem(slot.Item).Result == RemoveItemOperationResult.RemovedAll;
         }
 
         private bool TryBurnCurrentFuel()

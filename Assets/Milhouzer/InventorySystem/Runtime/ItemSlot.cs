@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Milhouzer.InventorySystem
 {
     [System.Serializable]
-    public class ItemSlot : ISlot
+    public class ItemSlot : IItemSlot
     {
         private int _index;
         public int Index => _index;
@@ -13,22 +13,6 @@ namespace Milhouzer.InventorySystem
         private IItemStack _stack;
 
         public IItemStack Stack => _stack;
-
-        /// <summary>
-        /// Get Stack.Item.Data if stack or item is not null;
-        /// </summary>
-        /// <value></value>
-        public IItemData Data 
-        {
-            get {
-                if(_stack == null)
-                    return null;
-                if(_stack.Item == null)
-                    return null;
-
-                return _stack.Item.Data;
-            }
-        }
 
         /// <summary>
         /// Wrapper for _stack.Item

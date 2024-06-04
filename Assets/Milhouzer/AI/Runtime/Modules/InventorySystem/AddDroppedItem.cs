@@ -77,11 +77,11 @@ namespace Milhouzer.AI.Modules.InventorySystem
         public new string Name => _name;
         
         [HideInInspector]
-        public InventoryBase Inventory;
+        public IInventory Inventory;
 
         public override void GetComponentsReferences(GameObject target)
         {
-            Inventory = target.GetComponent<InventoryBase>();
+            Inventory = target.GetComponent<IInventory>();
         }
     }
 }
