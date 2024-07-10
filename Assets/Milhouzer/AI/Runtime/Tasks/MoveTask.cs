@@ -78,7 +78,7 @@ namespace Milhouzer.AI
             Movement = movement;
         }
 
-        public override void GetComponentsReferences(GameObject target)
+        public override void GetComponentsReferences(GameObject target, GameObject instigator)
         {
             Movement = target.GetComponent<GenericMovement>();
         }

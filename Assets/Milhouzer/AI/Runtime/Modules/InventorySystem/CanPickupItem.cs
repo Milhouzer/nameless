@@ -1,8 +1,13 @@
 using UnityEngine;
 using Milhouzer.InventorySystem;
+using Milhouzer.InventorySystem.Restrictions;
 
 namespace Milhouzer.AI.Modules.InventorySystem
 {
+    /// <remarks>
+    /// Task is not really relevant for the moment as InventoryBase (which is the only inventory of the game) always check for restrictions before doing any
+    /// add operation.
+    /// </remarks>
     [System.Serializable]
     public class CanPickupItem : TaskBase
     {
@@ -23,22 +28,13 @@ namespace Milhouzer.AI.Modules.InventorySystem
 
         public override void Start()
         {
-            if(_data.Inventory != null)
+            if(_data.Restrictions != null)
             {
-                AddItemOperation operation = _data.Inventory.AddItem(_itemStack);
-                
-                switch(operation.Result)
+                if(_data.Restrictions.SatisfyRestrictions(_data.Item.Data))
                 {
-                    case AddItemOperationResult.AddedAll:
                         taskRunState = TaskRunState.Finished;
-                        break;
-                    case AddItemOperationResult.PartiallyAdded:
-                        taskRunState = TaskRunState.Finished;
-                        break;
-                    case AddItemOperationResult.AddedNone:
-                        taskRunState = TaskRunState.Failed;
-                        break;
                 }
+                taskRunState = TaskRunState.Failed;
             }
             else
             {
@@ -75,14 +71,14 @@ namespace Milhouzer.AI.Modules.InventorySystem
         private string _name = "CanPickupItem Task Data";
         public new string Name => _name;
 
-        [HideInInspector]
-        public IInventory Inventory;
+        private InventoryRestrictions _restrictions;
+        public InventoryRestrictions Restrictions => _restrictions;
 
         public ItemStackDefinition Item;
 
-        public override void GetComponentsReferences(GameObject target)
+        public override void GetComponentsReferences(GameObject target, GameObject Instigator)
         {
-            Inventory = target.GetComponent<IInventory>();
+            _restrictions = target.GetComponent<InventoryRestrictions>();
         }
     }
 }

@@ -26,7 +26,7 @@ namespace Milhouzer.Characters
         {
             return new Dictionary<string, object>()
             {
-                {"Type","Character"},
+                {"Panel","Character"},
                 {"CharacterInfos", Infos},
             };
         }

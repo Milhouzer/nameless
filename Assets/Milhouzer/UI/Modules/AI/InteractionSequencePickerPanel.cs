@@ -16,13 +16,11 @@ namespace Milhouzer.UI.Modules.AI
 
         IInteractable _interactable;
 
-        protected override void OnInitialize(IInteractable interactable)
+        protected override void OnInitialize(IUIDataSerializer data)
         {
-            if(interactable == null)
-                return;
+            _interactable = (IInteractable)data.SerializeUIData()["Interactable"];
 
-            _interactable = interactable;
-            ReadOnlyCollection<InteractionSequence> options = interactable.Options;
+            ReadOnlyCollection<InteractionSequence> options = _interactable.Options;
             _options = optionsContainer.GetComponentsInChildren<MenuOption>();
             DisplayOptions(options);
             TrackObject(_interactable.Owner.transform.position, 1f);

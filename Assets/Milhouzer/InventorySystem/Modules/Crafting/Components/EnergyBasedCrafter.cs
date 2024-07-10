@@ -135,7 +135,7 @@ namespace Milhouzer.InventorySystem.CraftingSystem
         {
             return new Dictionary<string, object>()
             {
-                {"Type", "EnergyBasedCrafter"},
+                {"Panel", "EnergyBasedCrafter"},
             };
         }
     }

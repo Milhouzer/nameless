@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
 using Milhouzer.InventorySystem.Restrictions;
 using UnityEngine;
 
@@ -12,115 +11,114 @@ namespace Milhouzer.InventorySystem
         public bool IsEmpty => _slots.Count == 0;
 
         [SerializeField]
-        private int _maxSlots;
+        protected int _maxSlots;
         public int MaxSlots => _maxSlots;
 
         [SerializeField]
-        private List<ItemStackDefinition> startItems = new();
+        protected List<IItemSlot> _slots = new();
+        public List<IItemSlot> Slots => _slots;
 
         [SerializeField]
-        private List<IItemSlot> _slots = new();
-        public List<IItemSlot> Slots => _slots;
+        protected InventoryDataInjector dataInjector;
 
         public event IInventory.AddItemEvent OnItemAdded;
         public event IInventory.RemoveItemEvent OnItemRemoved;
 
-        InventoryRestrictions Restrictions;
-
-        private void Awake() {
-
-            Restrictions = GetComponent<InventoryRestrictions>();
-
-            for(int i = 0; i < startItems.Count; i++)
+        protected virtual void Awake() 
+        {
+            if(dataInjector != null)
             {
-                ItemStack stack = new ItemStack(startItems[i].Data, startItems[i].Amount);
-                _slots.Add(new ItemSlot(stack, i));
+                for(int i = 0; i < dataInjector.SlotsData.Count; i++){
+                    SlotData data = dataInjector.SlotsData[i];
+                    ItemStack stack = data.ItemData == null ? null : new ItemStack(data.ItemData, data.Amount);
+                    _slots.Add(new ItemSlot(stack, i, stack == null ? null : data.Restrictions));
+                }
             }
-            startItems.Clear();
         }
 
-        /// <todo>
+        #region INVENTORY SPLITTING
+        
+        /// <summary>
+        /// Inventory base is only made of a single inventory (i.e. all items are stored in the same container).
+        /// Thus this method always return all the slots in <see cref="_slots"/>
+        /// </summary>
+        /// <param name="name">name of the inventory to get.</param>
+        /// <returns></returns>
+        public virtual ReadOnlyCollection<IItemSlot> GetInventory(string name)
+        {
+            return _slots.AsReadOnly();
+        }
+
+        #endregion
+
+
+
+        /// <TODO>
         /// Check result before sending event => if result is Added/RemovedNone, event shouldn't be sent.
-        /// </todo>
-        #region ITEM OPERATIONS
+        /// </TODO>
+        #region ADD ITEMS
 
-        // private AddItemOperation AddItem(IItem item)
-        // {
-        //     if(item == null)
-        //     {
-        //         Debug.LogError("Item was null");
-        //         return AddItemOperation.AddedNone();
-        //     }
-
-        //     if(!CanAddItem(item))
-        //         return AddItemOperation.AddedNone();
-
-        //     ItemSlot slot = this.FindSlot(item);
-        //     return AddItem(slot, item);
-        // }
-
-        public AddItemOperation AddItem(IItemStack stack)
+        public virtual AddItemOperation AddItem(IItemStack stack, string name = "")
         {
-            if(stack.Item == null)
-            {
-                Debug.LogError("Item was null");
+            if (stack == null) throw new ArgumentNullException(nameof(stack));
+
+            if(!CanAddItem(stack.Item, out IItemSlot slot)){
+
+                Debug.Log($"can not add item: couldn't add {stack.Item.Data.DisplayName} to {gameObject.name}");
                 return AddItemOperation.AddedNone();
             }
-
-            if(!CanAddItem(stack.Item))
-                return AddItemOperation.AddedNone();
-
-            IItemSlot slot = this.FindSlot(stack);
-            return AddItem(slot, stack);
-        }
-
-        // private AddItemOperation AddItem(IItemSlot slot, IItem item)
-        // {
-        //     if(item == null)
-        //     {
-        //         Debug.LogError("Item was null");
-        //         return AddItemOperation.AddedNone();
-        //     }
-
-        //     if(slot == null)
-        //         slot = CreateSlot(item);
-                
-        //     if(slot == null || !CanAddItem(item))
-        //         return AddItemOperation.AddedNone();
-
-        //     AddItemOperation operation = slot.Stack.Add(1);
-
-        //     ItemOperationEventData data = new ItemOperationEventData(slot, item, operation.Added);
-        //     OnItemAdded?.Invoke(data);
-
-        //     return operation;
-        // }
-
-        private AddItemOperation AddItem(IItemSlot slot, IItemStack stack)
-        {
-            if(stack.Item == null)
-            {
-                Debug.LogError("Item was null");
-                return AddItemOperation.AddedNone();
-            }
-
-            if(slot == null)
-                slot = CreateSlot(stack.Item);
-                
-            if(slot == null || !CanAddItem(stack.Item))
-                return AddItemOperation.AddedNone();
 
             AddItemOperation operation = slot.Stack.Add(stack.Amount);
-        
-            ItemOperationEventData data = new ItemOperationEventData(slot, stack.Item, operation.Added);
-            OnItemAdded?.Invoke(data);
-            
+            OnItemAdded?.Invoke(operation);
             return operation;
         }
 
-        private ItemSlot CreateSlot(IItem item)
+        /// <summary>
+        /// Check if item can be added to the inventory.
+        /// First check if the inventory is full. If so, return false
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        public virtual bool CanAddItem(IItem item)
         {
-            if(_slots.Count < MaxSlots)
+            if (item == null) throw new ArgumentNullException(nameof(item));
+
+            foreach(IItemSlot slot in _slots){
+                if(slot.CanAddItem(item))
+                    return true;
+
+                Debug.Log($"can not add item: couldn't add {item} to {slot}");
+            }
+            
+            return false;
+        }
+
+        /// <summary>
+        /// Check if item can be added to the inventory.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        internal virtual bool CanAddItem(IItem item, out IItemSlot slot)
+        {
+            if (item == null) throw new ArgumentNullException(nameof(item));
+
+            slot = null;
+            foreach(IItemSlot _slot in _slots){
+                
+                if(_slot.CanAddItem(item))
+                {
+                    slot = _slot;
+                    return true;
+                }
+            }
+            Debug.Log($"can not add item: couldn't add {item.Data.DisplayName} to {this}");
+
+            return false;
+        }
+
+        protected virtual ItemSlot CreateSlot(IItem item)
+        {
+            if(_slots.Count < _maxSlots)
             {
                 ItemSlot slot =  new ItemSlot(new ItemStack(item.Data, 0), _slots.Count);
                 _slots.Add(slot);
@@ -130,61 +128,39 @@ namespace Milhouzer.InventorySystem
             return null;
         }
 
-        // private ItemSlot CreateSlot(IItemStack stack)
-        // {
-        //     if(_slots.Count < MaxSlots)
-        //     {
-        //         ItemSlot slot = new ItemSlot(stack, _slots.Count - 1);
-        //         _slots.Add(slot);
-        //         return slot;
-        //     }
+        #endregion
 
-        //     return null;
-        // }
+        /// <TODO>
+        /// Check result before sending event => if result is Added/RemovedNone, event shouldn't be sent.
+        /// </TODO>
+        #region REMOVE ITEMS
 
-        private bool CanAddItem(IItem item)
+        public virtual RemoveItemOperation RemoveItem(IItem item, string name = "")
         {
-            if(item == null || Restrictions != null && !Restrictions.SatisfyRestrictions(this, item.Data))
-            {
-                Debug.Log("Can't add item : " + item + " on " + transform);
-                return false;
-            }
-            
-            return true;
-        }
-
-        /// <summary>
-        /// Remove item completely
-        /// </summary>
-        /// <param name="item"></param>
-        /// <returns></returns>//
-        public RemoveItemOperation RemoveItem(IItem item)
-        {
+            if (item == null) throw new ArgumentNullException(nameof(item));
             IItemSlot slot = this.FindSlot(item);
             
             if(slot == null)
                 return RemoveItemOperation.RemovedNone();
 
-            RemoveItemOperation operation =  new RemoveItemOperation(RemoveItemOperationResult.RemovedAll, slot.Stack.Amount);
-            ItemOperationEventData data = new ItemOperationEventData(slot, item, slot.Stack.Amount);
+            RemoveItemOperation operation =  new RemoveItemOperation(RemoveItemOperationResult.RemovedAll, item, slot.Stack.Amount);
 
             _slots.Remove(slot);
 
-            OnItemRemoved?.Invoke(data);
+            OnItemRemoved?.Invoke(operation);
             return operation;
         }
 
-        public RemoveItemOperation RemoveItem(IItem item, int amount)
+        public virtual RemoveItemOperation RemoveItem(IItem item, int amount, string name = "")
         {
+            if (item == null) throw new ArgumentNullException(nameof(item));
             IItemSlot slot = this.FindSlot(item);
             
             if(slot == null)
                 return RemoveItemOperation.RemovedNone();
 
-            RemoveItemOperation operation =  slot.Stack.Remove(1);
-
-            ItemOperationEventData data = new ItemOperationEventData(slot, item, operation.Removed);
-            OnItemRemoved?.Invoke(data);
+            RemoveItemOperation operation =  slot.Stack.Remove(amount);
+            OnItemRemoved?.Invoke(operation);
 
             return operation;
         }
@@ -194,95 +170,59 @@ namespace Milhouzer.InventorySystem
         /// </summary>
         /// <param name="slot"></param>
         /// <returns></returns>
-        private RemoveItemOperation RemoveItem(IItemSlot slot)
+        public virtual RemoveItemOperation RemoveItem(int i, string name = "")
         {
-            RemoveItemOperation operation = slot.Stack.Remove(1);
+            if(i > _slots.Count)
+                throw new IndexOutOfRangeException(nameof(i));
             
-            /// <TODO>
-            /// REPLACE NULL. However this implies to store the item before removing it...
-            /// </TODO>
-            ItemOperationEventData data = new ItemOperationEventData(slot, null, operation.Removed);
-            OnItemRemoved?.Invoke(data);
+            int removed = _slots[i].Stack.Amount;
+
+            RemoveItemOperation operation = new RemoveItemOperation(RemoveItemOperationResult.RemovedAll, _slots[i].Item, removed);
+            OnItemRemoved?.Invoke(operation);
+            _slots[i].Stack.Remove(_slots[i].Stack.Amount);
 
             return operation;
         }
 
         /// <summary>
-        /// Remove item at slot i
+        /// Remove item completely from given slot.
         /// </summary>
-        /// <param name="i"></param>
+        /// <param name="slot"></param>
         /// <returns></returns>
-        private RemoveItemOperation RemoveSlot(int i)
+        public virtual RemoveItemOperation RemoveItem(int i, int amount, string name = "")
         {
-            IItemSlot slot = _slots[i];
+            if(i > _slots.Count)
+                throw new IndexOutOfRangeException(nameof(i));
             
-            /// <TODO>
-            /// REPLACE NULL
-            /// </TODO>
-            ItemOperationEventData data = new ItemOperationEventData(slot, slot.Item, slot.Stack.Amount);
-            OnItemRemoved?.Invoke(data);
+            IItemSlot slot = _slots[i];
+            int removed = Mathf.Min(amount, slot.Stack.Amount);
 
-            int removed = slot.Stack.Amount;
-            _slots.RemoveAt(i);
+            RemoveItemOperation operation = new RemoveItemOperation(
+                removed == amount ? RemoveItemOperationResult.RemovedAll : RemoveItemOperationResult.PartiallyRemoved,
+                slot.Item,
+                removed
+            );
+            
+            OnItemRemoved?.Invoke(operation);
+            slot.Stack.Remove(amount);
 
-            return new RemoveItemOperation(RemoveItemOperationResult.RemovedAll, removed);
+            return operation;
         }
 
-
-            
         #endregion
 
-        
-        // public GameObject DropItem(IItem item)
-        // {
-        //     ItemSlot slot = this.FindSlot(item);
-        //     Vector3 dropPos = gameObject.transform.position + transform.forward;
+        #region UI DATA SERIALIZER
             
-        //     GameObject droppedItem = InventoryManager.DropItem(slot.Stack, dropPos);
-
-        //     RemoveItem(slot);
-
-        //     return droppedItem;
-        // }
-
-        // public GameObject DropItem(IItemStack stack)
-        // {
-        //     ItemSlot slot = this.FindSlot(stack);
-            
-        //     Vector3 dropPos = gameObject.transform.position + transform.forward;
-            
-        //     GameObject droppedItem = InventoryManager.DropItem(slot.Stack, dropPos);
-
-        //     RemoveItem(slot);
-
-        //     return droppedItem;
-        // }
-
-        /// <TODO>
-        /// Delete
-        /// </TODO>
-        /// <returns></returns>
-        public string ListItems()
-        {
-            StringBuilder builder = new StringBuilder();
-            foreach(ItemSlot slot in _slots)
-            {
-                if(slot.Item.Data == null)
-                    continue;
-
-                builder.AppendLine(slot.Index.ToString() + " : " + slot.Item.Data.ID + ", " + slot.Stack.Amount);
-            }
-
-            return builder.ToString();
-        }
-
-        public Dictionary<string, object> SerializeUIData()
+        public virtual Dictionary<string, object> SerializeUIData()
         {
             return new Dictionary<string, object>()
             {
-                {"Type","Inventory"},
+                {"Panel","Inventory"},
                 {"Slots", Slots},
+                {"Inventory", this},
             };
         }
+
+        #endregion
     }
 }

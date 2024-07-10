@@ -1,6 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using System;
 
 namespace Milhouzer.InventorySystem
 {
@@ -11,6 +9,8 @@ namespace Milhouzer.InventorySystem
 
         public BaseItem(IItemData data)
         {
+            if (data == null) throw new ArgumentNullException(nameof(data));
+            
             _data = data;
         }
     }

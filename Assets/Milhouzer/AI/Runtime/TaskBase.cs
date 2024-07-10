@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Milhouzer.AI
@@ -24,7 +25,6 @@ namespace Milhouzer.AI
         /// Data used by this task
         /// </summary>
         protected ITaskData _data;
-        public ITaskData Data => _data;
 
         /// <summary>
         /// State of the task.
@@ -32,12 +32,15 @@ namespace Milhouzer.AI
         protected TaskRunState taskRunState = TaskRunState.Waiting;
         public TaskRunState State => taskRunState;
 
+        protected InteractionSequence _sequence; 
+
         /// <summary>
         /// Initialize the task. If TaskTargetType is Runner, target will be set to runner, another target otherwise
         /// </summary>
         /// <param name="runner"></param>
         /// <param name="target"></param>
         /// <param name="data"></param>
+        [Obsolete]
         public void Initialize(ITaskRunner runner, GameObject target, ITaskData data)
         {
             _runner = runner;
@@ -45,7 +48,18 @@ namespace Milhouzer.AI
 
             OnInitialize(runner, target, data);
             
-            data.GetComponentsReferences(data.TargetType == TaskTargetType.Runner ? runner.Owner : target);
+            data.GetComponentsReferences(data.TargetType == TaskTargetType.Runner ? runner.Owner : target, data.TargetType == TaskTargetType.Runner ? target : runner.Owner);
+        }
+
+        public void Initialize(InteractionSequence sequence, ITaskRunner runner, GameObject target, ITaskData data)
+        {
+            _sequence = sequence;
+            _runner = runner;
+            _target = target;
+
+            OnInitialize(runner, target, data);
+            
+            data.GetComponentsReferences(data.TargetType == TaskTargetType.Runner ? runner.Owner : target, data.TargetType == TaskTargetType.Runner ? target : runner.Owner);
         }
 
         /// <summary>
@@ -73,6 +87,13 @@ namespace Milhouzer.AI
         public abstract void Stop();
         
         /// <summary>
+        /// Effectively write data on the <see cref="_sequence"/> blackboard.
+        /// </summary>
+        protected virtual void WriteDataOnBlackboard<T>(string name, T data){
+            _sequence.Blackboard.SetValue<T>(name, data);
+        }
+
+        /// <summary>
         /// Complete the task.
         /// </summary>
         /// <returns></returns>
@@ -92,13 +113,16 @@ namespace Milhouzer.AI
     {
         public string Name => "BaseTask";
         [SerializeField]
-        private TaskTargetType _targetType = TaskTargetType.Target;
+        protected TaskTargetType _targetType = TaskTargetType.Target;
         public TaskTargetType TargetType => _targetType;
 
         [SerializeField]
-        TaskFailureHandle _failureHandle;
+        protected TaskFailureHandle _failureHandle;
         public TaskFailureHandle FailureHandle => _failureHandle;
-        public abstract void GetComponentsReferences(GameObject target);
+
+        [SerializeField]
+        protected bool _saveOnBlackboard;
+        public abstract void GetComponentsReferences(GameObject target, GameObject instigator);
     }
 
 }

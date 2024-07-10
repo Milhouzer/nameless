@@ -29,9 +29,6 @@ namespace Milhouzer.InventorySystem.Restrictions
         {
             serializedObject.Update();
 
-            DrawDefaultInspector();
-
-            EditorGUILayout.Space();
             EditorGUILayout.LabelField("Add Item Restrictions", EditorStyles.boldLabel);
 
             EditorGUILayout.BeginHorizontal();
@@ -46,6 +43,9 @@ namespace Milhouzer.InventorySystem.Restrictions
             }
 
             EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.Space();
+            DrawDefaultInspector();
 
             serializedObject.ApplyModifiedProperties();
         }

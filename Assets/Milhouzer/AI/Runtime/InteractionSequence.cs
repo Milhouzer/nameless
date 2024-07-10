@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,6 +9,9 @@ namespace Milhouzer.AI
     /// Wrapper around list of tasks.
     /// Allows data control.
     /// </summary>
+    /// <TODO>
+    /// Tasks need to be able to write on blackboard : rename to TaskSequence
+    /// </TODO>
     [System.Serializable]
     [CreateAssetMenu(fileName = "InteractionSequence", menuName = "Milhouzer/AI/InteractionSequence", order = 0)]
     public class InteractionSequence : ScriptableObject 
@@ -42,15 +46,16 @@ namespace Milhouzer.AI
         /// <param name="target"></param>
         public void Initialize(ITaskRunner runner, GameObject target)
         {
-            if(runner == null)
-                return;
+            if (runner == null) throw new ArgumentNullException(nameof(runner));
 
+            _blackboard = new Blackboard();
+            
             for (int i = 0; i < _tasks.Count; i++)
             {
                 var task = _tasks[i];
                 var taskData = task.GetData();
 
-                task.Initialize(runner, target, taskData);
+                task.Initialize(this, runner, target, taskData);
 
                 _tasks[i] = task;
             }

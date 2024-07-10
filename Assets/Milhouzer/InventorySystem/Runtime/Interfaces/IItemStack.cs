@@ -1,13 +1,10 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+#nullable enable
 
 namespace Milhouzer.InventorySystem
 {
     public interface IItemStack
     {
-        BaseItem Item { get; }
+        IItem Item { get; }
         int Amount { get; }
         int MaxAmount { get; }
 

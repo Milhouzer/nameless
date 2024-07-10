@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Milhouzer.Common.Utility;
 using Milhouzer.InventorySystem.CraftingSystem;
+using Milhouzer.InventorySystem.ItemProcessing;
 using UnityEngine;
 using static Milhouzer.InventorySystem.CraftDatabase;
 
@@ -14,6 +16,12 @@ namespace Milhouzer.InventorySystem
         private GameObject DROPPED_ITEM_BASE;
         public ItemDatabase Items;
         public CraftDatabase Crafts;
+
+        protected override void Awake()
+        {
+            base.Awake();
+            Crafts.GetReversedRecipes();
+        }
         
         public static GameObject RenderItemModel(IItem item, Vector3 pos, Transform parent)
         {
@@ -91,6 +99,11 @@ namespace Milhouzer.InventorySystem
             return droppedItemGO;
         }
 
+        public List<string> GetCraftResults(ReadOnlyCollection<IItemSlot> slots, ProcessType process)
+        {
+            // TODO : use process here
+            return Crafts.FindRecipes(slots, 0);
+        }
 
         internal bool CanCraftItem(IInventory inventory, string item, CraftingProcess process)
         {
@@ -120,7 +133,14 @@ namespace Milhouzer.InventorySystem
 
             List<Ingredient> needed = Crafts.CookRecipes[item];
 
-            IItem crafted =  CreateItem(item);
+            IItemData itemData = GetItemData(item);
+            if(itemData == null)
+            {
+                Debug.LogError($"ItemData for {item} does not exist in database");
+                return false;
+            }
+
+            IItem crafted = new BaseItem(itemData); 
             AddItemOperation op = output.AddItem(new ItemStack(crafted.Data, 1));
 
             if(op.Result == AddItemOperationResult.AddedNone)
@@ -136,11 +156,9 @@ namespace Milhouzer.InventorySystem
             return true;
         }
 
-        private IItem CreateItem(string ID)
+        public IItemData GetItemData(string id)
         {
-            BaseItem item = new BaseItem(Instance.Items.FindEntry(x => x.ID == ID));
-
-            return item;
+            return Items.FindEntry(x => x.ID == id);
         }
     }
 }

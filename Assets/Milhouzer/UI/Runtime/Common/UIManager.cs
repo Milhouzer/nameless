@@ -89,7 +89,7 @@ namespace Milhouzer.UI
 
         void PlayerInputManager_InteractableClicked(IInteractable interactable)
         {
-            CreatePanel<IUIDataSerializer>(interactable, "InteractionSequencePickerPanel");
+            CreatePanel(interactable, "InteractionSequencePickerPanel");
             // CreatePanel(interactable);
         }
 
@@ -117,24 +117,32 @@ namespace Milhouzer.UI
         private void CreatePanel(IUIDataSerializer obj)
         {
             Dictionary<string, object> data = obj.SerializeUIData();
-            if(!data.ContainsKey("Type"))
+            if(!data.ContainsKey("Panel"))
+            {
+                Debug.LogError("Panel key is not present in serializedData");
                 return;
+            }
             
-            string panelID = (string)data["Type"];
+            string panelID = (string)data["Panel"];
 
             if(string.IsNullOrEmpty(panelID))
+            {
+                Debug.LogError($"{panelID} does not exist in configuration");
                 return;
+            }
 
-            IPanelController panel = CreatePanel<IUIDataSerializer>(obj, panelID);
+            IPanelController panel = CreatePanel(obj, panelID);
             if(panel == null)
                 return;
         }
 
-        public IPanelController CreatePanel<T>(T properties, string ID)
+        public IPanelController CreatePanel(IUIDataSerializer properties, string ID)
         {
             PanelReference reference = _settings.GetPanelReference(ID);
-            if(reference.Equals(default(PanelReference)))
+            if(reference.Equals(default(PanelReference))){
+                Debug.LogWarning($"No panel named {ID}");
                 return null;
+            }
 
             GameObject panel = Instantiate(reference.Prefab, CanvasTransform);
             
@@ -153,7 +161,7 @@ namespace Milhouzer.UI
         }
 
 
-        public bool ShowPanel<T>(T properties, string ID)
+        public bool ShowPanel(IUIDataSerializer properties, string ID)
         {
             registeredPanels.TryGetValue(ID, out IPanelController panelController);
             if(panelController != null)

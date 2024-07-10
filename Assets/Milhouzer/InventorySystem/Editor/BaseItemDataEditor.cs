@@ -15,7 +15,7 @@ namespace Milhouzer.InventorySystem
         SerializedProperty MaxStack;
         SerializedProperty Icon;
         SerializedProperty RenderModel;
-        SerializedProperty props;
+        SerializedProperty SupportedProcesses;
 
 
         SupportedItemPropertyType propertyType;
@@ -36,63 +36,81 @@ namespace Milhouzer.InventorySystem
             MaxStack = serializedObject.FindProperty("_maxStack");
             Icon = serializedObject.FindProperty("_icon");
             RenderModel = serializedObject.FindProperty("_renderModel");
-            props = serializedObject.FindProperty("_properties");
+            SupportedProcesses = serializedObject.FindProperty("_supportedProcesses");
         }
 
+        private Vector2 scrollPos = Vector2.zero;
         public override void OnInspectorGUI()
         {
             serializedObject.Update();
 
-            EditorGUILayout.BeginVertical();
+            scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
             {
-                EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.BeginVertical();
                 {
-                    EditorGUILayout.LabelField("Item ID", EditorStyles.label);
-                    EditorGUILayout.PropertyField(ID);
-                }
-                EditorGUILayout.EndHorizontal();
+                    DrawBaseItemProperties();
 
-                EditorGUILayout.BeginHorizontal();
-                {
-                    EditorGUILayout.LabelField("Item Name", EditorStyles.label);
-                    EditorGUILayout.PropertyField(DisplayName);
-                }
-                EditorGUILayout.EndHorizontal();
-                
-
-                EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.PropertyField(Category);
-                EditorGUILayout.EndHorizontal();
-                
-                EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.PropertyField(Flags);
-                EditorGUILayout.EndHorizontal();
-                
-                EditorGUILayout.BeginHorizontal();
-                bool stackable = IsStackable.boolValue;
-                EditorGUILayout.PropertyField(IsStackable);
-                EditorGUILayout.EndHorizontal();
-
-                if(stackable)
-                {
+                    EditorGUILayout.Space();
+                    EditorGUILayout.LabelField("Item processing", EditorStyles.boldLabel);
                     EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.PropertyField(MaxStack);
+                    EditorGUILayout.PropertyField(SupportedProcesses);
                     EditorGUILayout.EndHorizontal();
+                    
+                    EditorGUILayout.LabelField("Custom properties", EditorStyles.boldLabel);
+                    DrawItemPropertiesSection();
                 }
-
-                EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.PropertyField(Icon);
-                EditorGUILayout.EndHorizontal();
-
-                EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.PropertyField(RenderModel);
-                EditorGUILayout.EndHorizontal();
-                
-                DrawItemPropertiesSection();
+                EditorGUILayout.EndVertical();
             }
-            EditorGUILayout.EndVertical();
+            EditorGUILayout.EndScrollView();
 
             serializedObject.ApplyModifiedProperties();
+        }
+
+        protected virtual void DrawBaseItemProperties()
+        {
+            EditorGUILayout.LabelField("Base item properties", EditorStyles.boldLabel);
+            EditorGUILayout.BeginHorizontal();
+            {
+                EditorGUILayout.LabelField("Item ID", EditorStyles.label);
+                EditorGUILayout.PropertyField(ID);
+            }
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.BeginHorizontal();
+            {
+                EditorGUILayout.LabelField("Item Name", EditorStyles.label);
+                EditorGUILayout.PropertyField(DisplayName);
+            }
+            EditorGUILayout.EndHorizontal();
+            
+
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.PropertyField(Category);
+            EditorGUILayout.EndHorizontal();
+            
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.PropertyField(Flags);
+            EditorGUILayout.EndHorizontal();
+            
+            EditorGUILayout.BeginHorizontal();
+            bool stackable = IsStackable.boolValue;
+            EditorGUILayout.PropertyField(IsStackable);
+            EditorGUILayout.EndHorizontal();
+
+            if(stackable)
+            {
+                EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.PropertyField(MaxStack);
+                EditorGUILayout.EndHorizontal();
+            }
+
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.PropertyField(Icon);
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.PropertyField(RenderModel);
+            EditorGUILayout.EndHorizontal();
         }
 
         private void DrawItemPropertiesSection()

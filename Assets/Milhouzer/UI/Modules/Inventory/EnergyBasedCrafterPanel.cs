@@ -1,11 +1,14 @@
+using System;
 using System.Collections.Generic;
 using Milhouzer.CameraSystem;
+using Milhouzer.Common.Interfaces;
 using Milhouzer.InventorySystem.CraftingSystem;
 using Milhouzer.UI.InventorySystem;
 using UnityEngine;
 
 namespace Milhouzer.UI.Modules.InventorySystem.CraftingSystem
 {
+    [Obsolete]
     public class EnergyBasedCrafterPanel : UIPanel<EnergyBasedCrafter>
     {
         protected class EnergyBasedCrafterPanelProperties : PanelProperties<EnergyBasedCrafter>
@@ -42,15 +45,15 @@ namespace Milhouzer.UI.Modules.InventorySystem.CraftingSystem
             base.Awake();
         }
 
-        protected override void OnInitialize(EnergyBasedCrafter data)
+        protected override void OnInitialize(IUIDataSerializer data)
         {
-            fuelPanel.Initialize(data.InputFuel);
-            ingredientsPanel.Initialize(data.InputIngredients);
-            outputPanel.Initialize(data.Output);
+            // fuelPanel.Initialize(data.InputFuel);
+            // ingredientsPanel.Initialize(data.InputIngredients);
+            // outputPanel.Initialize(data.Output);
 
-            fuelPanel.Refresh();
-            ingredientsPanel.Refresh();
-            outputPanel.Refresh();
+            // fuelPanel.Refresh();
+            // ingredientsPanel.Refresh();
+            // outputPanel.Refresh();
         }
     }
 }

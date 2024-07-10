@@ -1,8 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using AYellowpaper.SerializedCollections;
+using Milhouzer.InventorySystem.ItemProcessing;
 using UnityEngine;
 
 namespace Milhouzer.InventorySystem
@@ -78,6 +77,9 @@ namespace Milhouzer.InventorySystem
         [SerializeReference]
         private List<ItemProperty> _properties;
 
+        [SerializeField]
+        private List<ProcessType> _supportedProcesses = new();
+        public List<ProcessType> SupportedProcesses => _supportedProcesses;
 
         public void SetProperty(string key, object value)
         {

@@ -175,6 +175,7 @@ MonoBehaviour:
     TASKPLANNER_PANEL_ID: TaskPlannerBase
     INSPECT_PANEL_ID: inspect_panel
     TASK_CARD_ID: TaskCard
+    COOKER_ID: Cooker
     PanelReferences:
     - ID: Inventory
       Prefab: {fileID: 1306581864342907431, guid: 14d5536c67bc9f348ab45af5d2e86f5b, type: 3}
@@ -194,6 +195,8 @@ MonoBehaviour:
       Prefab: {fileID: 7407586622379470179, guid: f81f0fada318f3845b27da927edd0aea, type: 3}
     - ID: interaction_sequence_picker_option
       Prefab: {fileID: 7407586622379470179, guid: f81f0fada318f3845b27da927edd0aea, type: 3}
+    - ID: Cooker
+      Prefab: {fileID: 7198378674453330067, guid: e95385d3e9448c545bd47202853bb9d3, type: 3}
   Canvas: {fileID: 1446759436}
 --- !u!1 &220829934
 GameObject:

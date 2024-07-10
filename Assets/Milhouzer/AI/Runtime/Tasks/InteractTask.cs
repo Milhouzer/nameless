@@ -12,8 +12,6 @@ namespace Milhouzer.AI
 
         [SerializeField]
         protected new InteractTaskData _data;
-
-        private InteractionSequence _sequence;
         private int _current;
 
         protected override void OnInitialize(ITaskRunner runner, GameObject target, ITaskData data)
@@ -44,7 +42,7 @@ namespace Milhouzer.AI
 
         public override TaskRunState Execute()
         {
-            TaskBase task = _sequence.Tasks[_current];
+            ITask task = _sequence.Tasks[_current];
             /// <TODO>
             /// It takes 1 more exectuion to execute the task because the task in interacttask is in waiting state 
             /// so 1 execution to start and 1 to execute then.
@@ -115,7 +113,7 @@ namespace Milhouzer.AI
             _index = index;
         }
 
-        public override void GetComponentsReferences(GameObject target)
+        public override void GetComponentsReferences(GameObject target, GameObject instigator)
         {
             target.GetComponent<IInteractable>();
         }

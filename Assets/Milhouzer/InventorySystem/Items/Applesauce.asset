@@ -14,14 +14,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _id: applesauce
   _displayName: Applesauce
-  _sprite: {fileID: 21300000, guid: 9cc918fcc1caf06498e137fd4a4feb15, type: 3}
+  _icon: {fileID: 21300000, guid: 2e49c193d19fded42be7aed626f11ae8, type: 3}
   _isStackable: 1
   _maxStack: 100
   _renderModel: {fileID: 3522609488548762159, guid: ca7933f8f5dfd61488a5f24614f85f9e, type: 3}
   _category: 0
+  _flags: 0
   _properties:
-  - Key: 
-    FloatValue: 0
-    IntValue: 0
-    StringValue: 
-    ObjectReferenceValue: {fileID: 0}
+  - rid: -2
+  _supportedProcesses: 
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }

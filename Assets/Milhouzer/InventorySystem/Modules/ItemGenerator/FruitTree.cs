@@ -2,9 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Milhouzer.Common.Interfaces;
+using System;
 
 namespace Milhouzer.InventorySystem
 {
+    [Obsolete]
     public class FruitTree : PeriodicItemGenerator, IItemHolder, IInspectable
     {
         [SerializeField]
@@ -49,7 +51,7 @@ namespace Milhouzer.InventorySystem
             _items.Add(stack);  
             _instanciatedItems.Add(itemGO);
 
-            return new AddItemOperation(AddItemOperationResult.AddedAll, stack.Amount);
+            return new AddItemOperation(AddItemOperationResult.AddedAll, stack.Item, stack.Amount);
         }
 
         public AddItemOperation Hold(List<IItemStack> stacks)
@@ -59,7 +61,7 @@ namespace Milhouzer.InventorySystem
                 Hold(stack);
             }
 
-            return new AddItemOperation(AddItemOperationResult.AddedAll, stacks[0].Amount);
+            return new AddItemOperation(AddItemOperationResult.AddedAll, null, stacks[0].Amount);
         }
 
         public RemoveItemOperation Pickup(IInventory inventory)
@@ -77,7 +79,7 @@ namespace Milhouzer.InventorySystem
 
             OnPickedUp?.Invoke();
 
-            return new RemoveItemOperation(RemoveItemOperationResult.RemovedAll, operation.Added);
+            return new RemoveItemOperation(RemoveItemOperationResult.RemovedAll, null, operation.Added);
         }
 
         private int ElectStackForPicking()
@@ -89,7 +91,7 @@ namespace Milhouzer.InventorySystem
         {
             return new Dictionary<string, object>()
             {
-                {"Type","FruitTree"},
+                {"Panel","FruitTree"},
                 {"FruitTreeInfos", Infos}
             };
         }

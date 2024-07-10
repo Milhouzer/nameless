@@ -12,6 +12,7 @@ namespace Milhouzer.UI
         public string TASKPLANNER_PANEL_ID = "TaskPlannerBase";
         public string INSPECT_PANEL_ID = "inspect_panel";
         public string TASK_CARD_ID = "TaskCard";
+        public string COOKER_ID = "Cooker";
 
         [SerializeField]
         private List<PanelReference> PanelReferences = new();

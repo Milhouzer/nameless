@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac20d402cc19c1d45b7e2e5ec2af510e, type: 3}
+  m_Name: CookerInventoryData
+  m_EditorClassIdentifier: 
+  SlotsData:
+  - ItemData: {fileID: 0}
+    Amount: 0
+    Restrictions: {fileID: 11400000, guid: c5bbd394264d3b140bc2bf651777b839, type: 2}
+  - ItemData: {fileID: 0}
+    Amount: 0
+    Restrictions: {fileID: 11400000, guid: b4cf0d4ad1d42744a9bd20d9a1acab22, type: 2}
+  - ItemData: {fileID: 0}
+    Amount: 0
+    Restrictions: {fileID: 0}
+  segmentations:
+  - Name: input
+    Index: 0
+    Length: 1
+  - Name: fuel
+    Index: 1
+    Length: 1
+  - Name: output
+    Index: 2
+    Length: 1

@@ -78,7 +78,8 @@ namespace Milhouzer.AI
         {
             return new Dictionary<string, object>()
             {
-                {"Type","InteractableBase"},
+                {"Panel","InteractableBase"},
+                {"Interactable", this},
                 {"Options", Options},
             };
         }

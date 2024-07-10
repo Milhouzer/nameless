@@ -11,7 +11,7 @@ namespace Milhouzer.InventorySystem
         [SerializeField]
         List<ItemCategory> AcceptedCategories = new();
 
-        public override bool IsSatisfied(IInventory inventory, IItemData item)
+        public override bool IsSatisfied(IItemData item)
         {
             return AcceptedCategories.Contains(item.Category);
         }

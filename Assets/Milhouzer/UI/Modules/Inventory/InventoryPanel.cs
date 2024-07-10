@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using Milhouzer.Common.Interfaces;
 using Milhouzer.InventorySystem;
 using UnityEngine;
 
@@ -20,6 +22,8 @@ namespace Milhouzer.UI.InventorySystem
         private bool dynamic;
         protected List<ItemSlotUI> slots = new();
     
+        [SerializeField]
+        protected string _inventoryName;
         protected IInventory _inventory;
 
         protected override void Awake()
@@ -29,6 +33,10 @@ namespace Milhouzer.UI.InventorySystem
                 _id = UIManager.Settings.INVENTORY_PANEL_ID;
             }
 
+            if(!dynamic)
+            {
+                slots = slotsContainer.GetComponentsInChildren<ItemSlotUI>().ToList();
+            }
             base.Awake();
         }
 
@@ -40,6 +48,12 @@ namespace Milhouzer.UI.InventorySystem
 
         public override void Hide()
         {
+            if(_inventory != null)
+            {
+                _inventory.OnItemAdded -= Inventory_ItemAdded;
+                _inventory.OnItemRemoved -= Inventory_ItemRemoved;
+            }
+            
             base.Hide();
         }
 
@@ -48,7 +62,7 @@ namespace Milhouzer.UI.InventorySystem
             base.SetVisibility(value);
         }
 
-        protected override void OnInitialize(IInventory inventory)
+        protected override void OnInitialize(IUIDataSerializer data)
         {
             if(_inventory != null)
             {
@@ -56,7 +70,7 @@ namespace Milhouzer.UI.InventorySystem
                 _inventory.OnItemRemoved -= Inventory_ItemRemoved;
             }
 
-            _inventory = inventory;
+            _inventory = (IInventory)data.SerializeUIData()["Inventory"];
 
             _inventory.OnItemAdded += Inventory_ItemAdded;
             _inventory.OnItemRemoved += Inventory_ItemRemoved;
@@ -68,12 +82,12 @@ namespace Milhouzer.UI.InventorySystem
             
         }
 
-        private void Inventory_ItemRemoved(ItemOperationEventData eventData)
+        private void Inventory_ItemRemoved(RemoveItemOperation operation)
         {
             Refresh();
         }
 
-        private void Inventory_ItemAdded(ItemOperationEventData eventData)
+        private void Inventory_ItemAdded(AddItemOperation operation)
         {
             Refresh();
         }
@@ -122,14 +136,15 @@ namespace Milhouzer.UI.InventorySystem
 
                 slots = new List<ItemSlotUI>();
 
-                for (int i = 0; i < _inventory.MaxSlots; i++)
+                ReadOnlyCollection<IItemSlot> inventorySlots = _inventory.GetInventory(_inventoryName);
+                for (int i = 0; i < inventorySlots.Count; i++)
                 {
                     ItemSlotUI slot = Instantiate(slotPrefab);
                     slot.gameObject.transform.SetParent(slotsContainer);
                     slots.Add(slot);
                 }
 
-                foreach(IItemSlot itemSlot in _inventory.Slots)
+                foreach(IItemSlot itemSlot in inventorySlots)
                 {
                     if(itemSlot == null)
                         continue;
@@ -144,21 +159,10 @@ namespace Milhouzer.UI.InventorySystem
             else
             {
                 Debug.Log("Refresh inventory " + _inventory);
+                ReadOnlyCollection<IItemSlot> inventorySlots = _inventory.GetInventory(_inventoryName);
                 for(int j = 0; j < slots.Count; j++)
                 {
-                    if(j < _inventory.Slots.Count)
-                    {
-                        IItemSlot slot = _inventory.Slots[j];
-                            
-                        Debug.Log(slot.Index + " " + slots.Count);
-                        ItemSlotUI slotUI = slots[slot.Index];
-                        slotUI.SetItem(slot);
-                    }else
-                    {
-                        ItemSlotUI slotUI = slots[j];
-                        slotUI.SetItem(null);
-                    }
-
+                    slots[j].SetItem(j < inventorySlots.Count ? inventorySlots[j] : null);
                 }
             }
         }

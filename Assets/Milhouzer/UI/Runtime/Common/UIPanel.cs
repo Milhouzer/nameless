@@ -1,8 +1,12 @@
 using System;
+using Milhouzer.Common.Interfaces;
 using UnityEngine;
 
 namespace Milhouzer.UI
 {
+    /// <TODO>
+    /// Remove, UIPanel could be non generic.
+    /// </TODO>
     public abstract class PanelProperties<T> 
     {
         public abstract void SetCallbacks(T owner);
@@ -41,16 +45,12 @@ namespace Milhouzer.UI
             UIManager.Instance.UnRegisterPanel(ID);
         }
 
-        public void Initialize(object data)
+        public void Initialize(IUIDataSerializer data)
         {
-            if(data is not T typedData)
-                return;
-
-            // _id = Guid.NewGuid().ToString();
-            OnInitialize(typedData);
+            OnInitialize(data);
         }
 
-        protected virtual void OnInitialize(T data)
+        protected virtual void OnInitialize(IUIDataSerializer data)
         {
 
         }

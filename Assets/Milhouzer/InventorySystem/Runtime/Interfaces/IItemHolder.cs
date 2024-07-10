@@ -3,6 +3,12 @@ using System.Collections.Generic;
 
 namespace Milhouzer.InventorySystem
 {
+    /// <summary>
+    /// Lightweight inventory
+    /// </summary>
+    /// <TODO>
+    /// Delete this garbage
+    /// </TODO>
     public interface IItemHolder
     {
         bool HoldSingleItem { get; }

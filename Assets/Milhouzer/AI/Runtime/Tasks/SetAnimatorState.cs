@@ -66,7 +66,7 @@ namespace Milhouzer.AI
         public string State;
         public IAnimator Animator;
 
-        public override void GetComponentsReferences(GameObject target)
+        public override void GetComponentsReferences(GameObject target, GameObject instigator)
         {
             Animator = target.GetComponent<IAnimator>();
         }

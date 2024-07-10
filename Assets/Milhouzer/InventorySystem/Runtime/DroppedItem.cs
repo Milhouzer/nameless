@@ -1,8 +1,10 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Milhouzer.InventorySystem
 {
+    [Obsolete]
     public class DroppedItem : MonoBehaviour, IItemHolder
     {
         private bool _holdSingleItem = true;
@@ -15,15 +17,15 @@ namespace Milhouzer.InventorySystem
 
         public event IItemHolder.PickUpEvent OnPickedUp;
 
-        public AddItemOperation Hold(IItemStack item)
+        public AddItemOperation Hold(IItemStack stack)
         {
             if(_holdSingleItem && _items.Count != 0)
             {
                 return AddItemOperation.AddedNone();
             }
-            _items.Add(item);
+            _items.Add(stack);
 
-            return new AddItemOperation(AddItemOperationResult.AddedAll, item.Amount);
+            return new AddItemOperation(AddItemOperationResult.AddedAll, stack.Item, stack.Amount);
             
         }
 
@@ -35,7 +37,7 @@ namespace Milhouzer.InventorySystem
             }
 
             _items.AddRange(items);
-            return new AddItemOperation(AddItemOperationResult.AddedAll, items[0].Amount);
+            return new AddItemOperation(AddItemOperationResult.AddedAll, items[0].Item, items[0].Amount);
         }
 
         public RemoveItemOperation Pickup(IInventory inventory)
@@ -45,7 +47,7 @@ namespace Milhouzer.InventorySystem
             Destroy(gameObject);
 
             OnPickedUp?.Invoke();
-            return new RemoveItemOperation(RemoveItemOperationResult.RemovedAll, operation.Added);
+            return new RemoveItemOperation(RemoveItemOperationResult.RemovedAll, null, operation.Added);
         }
     }
 }

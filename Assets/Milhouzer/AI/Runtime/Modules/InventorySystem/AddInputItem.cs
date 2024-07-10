@@ -1,22 +1,25 @@
 using UnityEngine;
 using Milhouzer.InventorySystem;
+using Milhouzer.InventorySystem.ItemProcessing;
+using System.Collections.Generic;
+using Milhouzer.InventorySystem.Restrictions;
 
 namespace Milhouzer.AI.Modules.InventorySystem
 {
     [System.Serializable]
-    public class AddItem : TaskBase
+    public class AddInputItem : TaskBase
     {
         [SerializeField]
-        protected new AddItemTaskData _data;
-        public new AddItemTaskData Data => _data;
+        protected new AddInputItemTaskData _data;
+        public new AddInputItemTaskData Data => _data;
 
         protected ItemStack _itemStack;
 
         protected override void OnInitialize(ITaskRunner runner, GameObject target, ITaskData data)
         {
-            _data = data as AddItemTaskData;
+            _data = data as AddInputItemTaskData;
             if(_data == null)
-                throw new System.InvalidOperationException($"Initialization failed for {nameof(AddItem)}: Invalid data type. Expected {nameof(AddItemTaskData)}, but received {data?.GetType().Name ?? "null"}.");
+                throw new System.InvalidOperationException($"Initialization failed for {nameof(AddInputItem)}: Invalid data type. Expected {nameof(AddInputItemTaskData)}, but received {data?.GetType().Name ?? "null"}.");
 
              _itemStack = new ItemStack(_data.Item.Data, _data.Item.Amount);
         
@@ -60,21 +63,30 @@ namespace Milhouzer.AI.Modules.InventorySystem
     }
 
     [System.Serializable]
-    public class AddItemTaskData : BaseTaskData
+    public class AddInputItemTaskData : BaseTaskData
     {
 
         [SerializeField]
-        private string _name = "AddItem Task Data";
+        private string _name = "AddInputItem";
+        /// <summary>
+        /// Name of the task
+        /// </summary>
         public new string Name => _name;
         
+        /// <summary>
+        /// Inventory to add the item to.
+        /// </summary>
         [HideInInspector]
-        public InventoryBase Inventory;
+        public IInventory Inventory;
 
+        /// <summary>
+        /// Item to add
+        /// </summary>
         public ItemStackDefinition Item;
 
-        public override void GetComponentsReferences(GameObject target)
+        public override void GetComponentsReferences(GameObject target, GameObject instigator)
         {
-            Inventory = target.GetComponent<InventoryBase>();
+            Inventory = target.GetComponent<IInventory>();
         }
     }
 }

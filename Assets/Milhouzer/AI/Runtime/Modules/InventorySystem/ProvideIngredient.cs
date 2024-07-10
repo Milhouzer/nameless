@@ -26,7 +26,7 @@ namespace Milhouzer.AI.Modules.InventorySystem
         {
             if(_data.Inventory != null && _crafter != null)
             {
-                IItemSlot slot = InventoryUtility.FindItemByCategory(_data.Inventory, _data.Category);
+                IItemSlot slot = _data.Inventory.FindItemSlot(x => x.Stack.Item.Data.Category == _data.Category);
                 if(slot == null && slot.Item.Data != null)
                 {
                     Debug.Log("no fueld found on " + _data.Inventory);
@@ -92,7 +92,7 @@ namespace Milhouzer.AI.Modules.InventorySystem
         [HideInInspector]
         public IInventory Inventory;
 
-        public override void GetComponentsReferences(GameObject target)
+        public override void GetComponentsReferences(GameObject target, GameObject instigator)
         {
             Debug.Log("set data " + target);
             Inventory = target.GetComponent<IInventory>();

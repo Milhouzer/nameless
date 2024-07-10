@@ -29,6 +29,6 @@ namespace Milhouzer.AI
         /// Get useful components references for the task execution on the specified target.
         /// </summary>
         /// <param name="target">Target to get the references from.</param>
-        abstract void GetComponentsReferences(GameObject target);
+        abstract void GetComponentsReferences(GameObject target, GameObject instigator);
     }
 }

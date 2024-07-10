@@ -45,6 +45,12 @@ namespace Milhouzer.AI
         /// Tasks set on the runner.
         /// </summary>
         /// <value></value>
+        /// <TODO>
+        /// Use a TaskSequence (currently InteractionSequence) instead of a list.
+        /// This allows a better flow control with functions like Step (we could imagine a reverse mode but somme actions are irreversible due to data loss)
+        /// Reversable actions: move, rotate (newtonian mechanics).
+        /// Irreversible actions: add/remove items, etc.
+        /// </TODO>
         public ReadOnlyCollection<ITask> Tasks { get; }
 
         /// <summary>

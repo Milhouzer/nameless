@@ -32,12 +32,12 @@ namespace Milhouzer.UI.Modules.InventorySystem
         
         public bool CanReadData(Dictionary<string, object> data)
         {
-            return data.ContainsKey("Type") 
-                && (string)data["Type"] == "FruitTree" 
+            return data.ContainsKey("Panel") 
+                && (string)data["Panel"] == "FruitTree" 
                 && data.ContainsKey("FruitTreeInfos");
         }
 
-        protected override void OnInitialize(IInspectable inspectable)
+        protected override void OnInitialize(IUIDataSerializer inspectable)
         {
             _id = UIManager.Settings.INSPECT_PANEL_ID;
             

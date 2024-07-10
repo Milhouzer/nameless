@@ -10,20 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a54943fc078067d4cb827b11454e0685, type: 3}
-  m_Name: ProvideFuel
+  m_Name: PickupCookerOutput
   m_EditorClassIdentifier: 
-  _name: Provide Fuel
+  _name: Pickup output
   _tasks:
-  - rid: 4414629611519344641
+  - rid: 3772742688658685952
   references:
     version: 2
     RefIds:
-    - rid: 4414629611519344641
-      type: {class: ProvideFuel, ns: Milhouzer.AI.Modules.InventorySystem, asm: Milhouzer.AI}
+    - rid: 3772742688658685952
+      type: {class: LootInventory, ns: Milhouzer.AI.Modules.InventorySystem, asm: Milhouzer.AI}
       data:
         _data:
-          _targetType: 0
+          _targetType: 1
           _failureHandle: 0
-          _name: ProvideFuel Task Data
-          Inventory: {fileID: 0}
-          Category: 1
+          _saveOnBlackboard: 0
+          _name: Pickup output
+          _inventoryName: output
+          _restrictions: {fileID: 0}

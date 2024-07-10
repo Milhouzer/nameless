@@ -33,20 +33,20 @@ namespace Milhouzer.Characters
         
         public bool CanReadData(Dictionary<string, object> data)
         {
-            return data.ContainsKey("Type") 
-                && (string)data["Type"] == "Character" 
+            return data.ContainsKey("Panel") 
+                && (string)data["Panel"] == "Character" 
                 && data.ContainsKey("CharacterInfos");
         }
 
-        protected override void OnInitialize(IInspectable inspectable)
+        protected override void OnInitialize(IUIDataSerializer data)
         {
             _id = UIManager.Settings.INSPECT_PANEL_ID;
 
-            Dictionary<string, object> data = inspectable.SerializeUIData();
-            if(!CanReadData(data))
+            Dictionary<string, object> dict = data.SerializeUIData();
+            if(!CanReadData(dict))
                 return;
 
-            Infos = (CharacterInfos)data["CharacterInfos"];
+            Infos = (CharacterInfos)dict["CharacterInfos"];
 
             Refresh();
         }

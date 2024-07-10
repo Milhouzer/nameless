@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 namespace Milhouzer.InventorySystem
@@ -29,7 +28,7 @@ namespace Milhouzer.InventorySystem
     public class ItemStack : IItemStack
     {
         BaseItem _item;
-        public BaseItem Item => _item;
+        public IItem Item => _item;
 
         private int _amount;
         public int Amount => _amount;
@@ -41,13 +40,13 @@ namespace Milhouzer.InventorySystem
 
         public ItemStack(IItemData data, int amount)
         {
+            // if (data == null) throw new ArgumentNullException(nameof(data));
             if(data == null)
-            {
-                return;
-            }
-
-            _item = new BaseItem(data);
-            _amount = Mathf.Clamp(amount, 0, data.MaxStack);
+                Debug.LogWarning("Created item with null data");
+            else   
+                _item = new BaseItem(data);
+                
+            _amount = Mathf.Clamp(amount, 0, data == null ? int.MaxValue : data.MaxStack);
         }
 
         public AddItemOperation Add(int amount)
@@ -61,7 +60,7 @@ namespace Milhouzer.InventorySystem
             Debug.Log("Add item " + amount + " " + added + " " + MaxAmount);
             _amount += added;
             
-            return new AddItemOperation(added == amount ? AddItemOperationResult.AddedAll : AddItemOperationResult.PartiallyAdded, added);
+            return new AddItemOperation(added == amount ? AddItemOperationResult.AddedAll : AddItemOperationResult.PartiallyAdded, _item, added);
         }
 
         public RemoveItemOperation Remove(int amount)
@@ -76,7 +75,16 @@ namespace Milhouzer.InventorySystem
             Debug.Log(removed + " " + _amount + " " + amount);
             _amount -= removed;
 
-            return new RemoveItemOperation(removed == amount ? RemoveItemOperationResult.RemovedAll : RemoveItemOperationResult.PartiallyRemoved, removed);
+            RemoveItemOperation result = new RemoveItemOperation(
+                removed == amount ? RemoveItemOperationResult.RemovedAll : RemoveItemOperationResult.PartiallyRemoved,
+                _item,
+                removed
+            );
+
+            if(_amount == 0)
+                _item = null;
+
+            return result;
         }
     }
 }

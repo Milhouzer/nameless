@@ -46,4 +46,4 @@ MonoBehaviour:
   - name: water
     amount: 3
   - name: milk
-    amount: 0
+    amount: 1

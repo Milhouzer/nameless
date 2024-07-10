@@ -23,6 +23,7 @@ MonoBehaviour:
   _properties:
   - rid: 4414629884514533386
   - rid: 4414629884514533387
+  _supportedProcesses: 00000000
   references:
     version: 2
     RefIds:

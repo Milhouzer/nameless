@@ -1,23 +1,24 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Milhouzer.InventorySystem.Restrictions
 {
-    public class InventoryRestrictions : MonoBehaviour
-    {
-        [SerializeReference]
-        public List<AddItemRestriction> Restrictions;
+    [CreateAssetMenu(fileName = "InventoryRestrictions", menuName = "InventoryRestrictions", order = 0)]
+    public class InventoryRestrictions : ScriptableObject {
+        
+            [SerializeReference]
+            public List<AddItemRestriction> Restrictions = new();
 
-        public bool SatisfyRestrictions(IInventory inventory, IItemData data)
-        {
-            foreach(AddItemRestriction restriction in Restrictions)
+            public bool SatisfyRestrictions(IItemData data)
             {
-                if(!restriction.IsSatisfied(inventory, data))
-                    return false;
-            }
+                foreach(AddItemRestriction restriction in Restrictions)
+                {
+                    if(!restriction.IsSatisfied(data))
+                        return false;
+                }
 
-            return true;
-        }
+                return true;
+            }
     }
 }

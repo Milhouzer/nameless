@@ -8,7 +8,7 @@ namespace Milhouzer.InventorySystem.CraftingSystem
     /// <summary>
     /// Crafting recipe class
     /// </summary>
-    [CreateAssetMenu(fileName = "CraftingRecipe", menuName = "Milhouzer/Inventory/Crafting", order = 0)]
+    [CreateAssetMenu(fileName = "CraftingRecipe", menuName = "Milhouzer/Inventory/Crafting/Recipe", order = 0)]
     public class CraftingRecipe : ScriptableObject {
         public CraftingProcess Process;
         public List<string> Ingredients = new();

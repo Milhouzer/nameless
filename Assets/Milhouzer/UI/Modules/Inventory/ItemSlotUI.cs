@@ -30,7 +30,7 @@ namespace Milhouzer.UI.InventorySystem
 
         protected virtual void Refresh()
         {
-            if(itemSlot == null || itemSlot.Stack == null || itemSlot.Item.Data == null)
+            if(itemSlot == null || itemSlot.IsEmpty())
             {
                 Reset();
                 return;
@@ -38,6 +38,7 @@ namespace Milhouzer.UI.InventorySystem
 
             Stack.text = itemSlot.Stack.Amount.ToString();
             Icon.sprite = itemSlot.Item.Data.Sprite;
+            Icon.SetAlpha(1f);
         }
 
         protected virtual void Reset()

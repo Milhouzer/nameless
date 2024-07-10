@@ -1,9 +1,11 @@
 namespace Milhouzer.InventorySystem.CraftingSystem
 {
+    using System;
     using System.Collections;
     using System.Linq;
     using UnityEngine;
     
+    [Obsolete]
     public class Crafter : MonoBehaviour, ICrafter
     {
         [Header("Crafter section")]
@@ -38,10 +40,10 @@ namespace Milhouzer.InventorySystem.CraftingSystem
 
             return operation;
         }
-
+        
         public virtual RemoveItemOperation PickupOutput(IInventory inventory)
         {
-            RemoveItemOperation result = new RemoveItemOperation(RemoveItemOperationResult.RemovedAll, 0);
+            RemoveItemOperation result = new RemoveItemOperation(RemoveItemOperationResult.RemovedAll, null, 0);
             int left = _output.Slots.Count;
             for (int i = _output.Slots.Count - 1; i >= 0 ; i--)
             {

@@ -5,10 +5,11 @@ using System.Linq;
 using AYellowpaper.SerializedCollections;
 using System;
 using System.Diagnostics;
+using System.Collections.ObjectModel;
 
 namespace Milhouzer.InventorySystem
 {
-    [CreateAssetMenu(fileName = "CraftDatabase", menuName = "Milhouzer/Inventory/Crafting", order = 0)]
+    [CreateAssetMenu(fileName = "CraftDatabase", menuName = "Milhouzer/Inventory/Crafting/Database", order = 0)]
     public class CraftDatabase : ScriptableObject
     {
         [System.Serializable]
@@ -77,11 +78,14 @@ namespace Milhouzer.InventorySystem
         /// <TODO>
         /// Write other methods like this, for instance FindRecipe(List<IItemStack>), etc.
         /// </TODO>
-        public List<string> FindRecipes(IInventory inventory, CraftingProcess process)
+        public List<string> FindRecipes(ReadOnlyCollection<IItemSlot> slots, CraftingProcess process)
         {
             List<Ingredient> ingredients = new();
-            foreach(IItemSlot slot in inventory.Slots)
+            foreach(IItemSlot slot in slots)
             {
+                if(slot.Item == null)
+                    continue;
+
                 ingredients.Add(new Ingredient(slot.Item.Data.ID, slot.Stack.Amount));
             }
             return FindRecipes(ingredients, process);
@@ -118,6 +122,7 @@ namespace Milhouzer.InventorySystem
             List<string> possibleRecipes = new();
             Dictionary<string, int> inProgressRecipes = new Dictionary<string, int>();
 
+            // Iterate over available ingredients
             foreach(Ingredient ingredient in ingredients)
             {
                 // Get the output the that can be formed based on the ingredient.

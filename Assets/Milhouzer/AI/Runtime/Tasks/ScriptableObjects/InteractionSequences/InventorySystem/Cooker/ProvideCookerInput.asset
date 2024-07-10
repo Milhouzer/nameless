@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a54943fc078067d4cb827b11454e0685, type: 3}
+  m_Name: ProvideCookerInput
+  m_EditorClassIdentifier: 
+  _name: Add input
+  _tasks:
+  - rid: 3772742419473498112
+  references:
+    version: 2
+    RefIds:
+    - rid: 3772742419473498112
+      type: {class: AddItem, ns: Milhouzer.AI.Modules.InventorySystem, asm: Milhouzer.AI}
+      data:
+        _data:
+          _targetType: 1
+          _failureHandle: 0
+          _saveOnBlackboard: 0
+          _name: Add input
+          _inventoryName: input
+          _restrictions: {fileID: 11400000, guid: c5bbd394264d3b140bc2bf651777b839, type: 2}

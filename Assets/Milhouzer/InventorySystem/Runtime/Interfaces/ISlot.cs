@@ -2,12 +2,15 @@ namespace Milhouzer.InventorySystem
 {
     public interface IItemSlot : ISlot<IItemStack>
     {
-        public IItem Item { get; }
+        IItem Item { get; }
+        bool CanAddItem(IItem item);
     }
     
     public interface ISlot<T>
     {
-        public int Index { get; }
-        public T Stack { get; }
+        int Index { get; }
+        T Stack { get; }
+        bool IsEmpty();
+        void Empty();
     }
 }

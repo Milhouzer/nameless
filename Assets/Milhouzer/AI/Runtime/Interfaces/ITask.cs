@@ -24,12 +24,6 @@ namespace Milhouzer.AI
         GameObject Target { get; }
 
         /// <summary>
-        /// Task data. Holds references used in the task execution.
-        /// </summary>
-        /// <value></value>
-        ITaskData Data { get; }
-
-        /// <summary>
         /// State of the task.
         /// </summary>
         /// <value></value>

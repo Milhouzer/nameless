@@ -60,7 +60,7 @@ namespace Milhouzer.AI
         {
             return new Dictionary<string, object>()
             {
-                {"Type","TaskPlannerBase"},
+                {"Panel","TaskPlannerBase"},
             };
         }
     }

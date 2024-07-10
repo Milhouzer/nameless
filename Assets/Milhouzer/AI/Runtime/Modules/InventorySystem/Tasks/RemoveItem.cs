@@ -1,5 +1,6 @@
 using UnityEngine;
 using Milhouzer.InventorySystem;
+using Milhouzer.InventorySystem.Restrictions;
 
 namespace Milhouzer.AI.Modules.InventorySystem
 {
@@ -11,23 +12,22 @@ namespace Milhouzer.AI.Modules.InventorySystem
         public new RemoveItemTaskData Data => _data;
 
         protected ItemStack _itemStack;
+        protected RemoveItemOperation result;
 
         protected override void OnInitialize(ITaskRunner runner, GameObject target, ITaskData data)
         {
             _data = data as RemoveItemTaskData;
-            if(_data == null)
-                throw new System.InvalidOperationException($"Initialization failed for {nameof(RemoveItem)}: Invalid data type. Expected {nameof(RemoveItemTaskData)}, but received {data?.GetType().Name ?? "null"}.");
-
-             _itemStack = new ItemStack(_data.Item.Data, _data.Item.Amount);
-        
+            if(_data == null)  throw new System.InvalidOperationException($"Initialization failed for {nameof(RemoveItem)}: Invalid data type. Expected {nameof(RemoveItemTaskData)}, but received {data?.GetType().Name ?? "null"}.");        
         }
+
         public override void Start()
         {
-            if(_data.Inventory != null)
+            if(_data.Target != null)
             {
-                RemoveItemOperation operation = _data.Inventory.RemoveItem(_itemStack.Item, _itemStack.Amount);
+                int index = _data.Target.FindFirstItem(_data.Restrictions);
+                result = _data.Target.RemoveItem(index);
                 
-                switch(operation.Result)
+                switch(result.Result)
                 {
                     case RemoveItemOperationResult.RemovedAll:
                         taskRunState = TaskRunState.Finished;
@@ -39,6 +39,8 @@ namespace Milhouzer.AI.Modules.InventorySystem
                         taskRunState = TaskRunState.Failed;
                         break;
                 }
+
+                WriteDataOnBlackboard("REMOVED_ITEM", result);
             }
             else
             {
@@ -60,7 +62,7 @@ namespace Milhouzer.AI.Modules.InventorySystem
         {
 
         }
-        
+
         public override ITaskData GetData()
         {
             return _data;
@@ -72,17 +74,22 @@ namespace Milhouzer.AI.Modules.InventorySystem
     {
 
         [SerializeField]
-        private string _name = "RemoveItem Task Data";
+        private string _name = "Remove Item";
         public new string Name => _name;
+
+        [SerializeField]
+        private string _inventoryName = "";
+        public string InventoryName => _inventoryName;
+
+        [SerializeField]
+        private InventoryRestrictions _restrictions;
+        public InventoryRestrictions Restrictions;
         
-        [HideInInspector]
-        public IInventory Inventory;
+        public IInventory Target { get; private set; }
 
-        public ItemStackDefinition Item;
-
-        public override void GetComponentsReferences(GameObject target)
+        public override void GetComponentsReferences(GameObject target, GameObject instigator)
         {
-            Inventory = target.GetComponent<IInventory>();
+            Target = target.GetComponent<IInventory>();
         }
     }
 }

@@ -943,11 +943,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _maxSlots: 4
-  startItems:
-  - Data: {fileID: 11400000, guid: 48234fd06a765cb4eb329b6402fbe36f, type: 2}
-    Amount: 20
-  - Data: {fileID: 11400000, guid: 04ec1d85e8d361849b85a6e6ac8e96c7, type: 2}
-    Amount: 20
-  - Data: {fileID: 11400000, guid: 44b871500b55a1f4a87ca4c94e6903e7, type: 2}
-    Amount: 100
-  _slots: []
+  dataInjector: {fileID: 11400000, guid: 1f7c8ebb0cf2ef0488ecb4a24b22f0ba, type: 2}

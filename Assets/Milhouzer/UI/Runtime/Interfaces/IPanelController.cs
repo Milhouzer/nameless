@@ -1,10 +1,12 @@
+using Milhouzer.Common.Interfaces;
+
 namespace Milhouzer.UI
 {
     public interface IPanelController
     {
         public string ID { get; }
         public bool IsVisible { get; }
-        public void Initialize(object data);
+        public void Initialize(IUIDataSerializer data);
         public void Show();
         public void Hide();
 

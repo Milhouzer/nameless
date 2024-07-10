@@ -22,6 +22,7 @@ MonoBehaviour:
   _flags: 4
   _properties:
   - rid: 4414629887497994240
+  _supportedProcesses: 02000000
   references:
     version: 2
     RefIds:

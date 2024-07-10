@@ -1,4 +1,5 @@
 using Milhouzer.AI;
+using Milhouzer.Common.Interfaces;
 using UnityEngine;
 
 namespace Milhouzer.UI.Modules.TaskPlanning
@@ -27,10 +28,11 @@ namespace Milhouzer.UI.Modules.TaskPlanning
             card.Initialize(task);
         }
 
-        protected override void OnInitialize(TaskPlannerBase planner)
+        protected override void OnInitialize(IUIDataSerializer data)
         {
+            
+            _planner = (TaskPlannerBase)data.SerializeUIData()["Planner"];
             Debug.Log("Show taskplanner panel");
-            _planner = planner;
             _planner.TaskAddEvent += Planner_TaskAdd;
             Show();
         }

@@ -53,7 +53,7 @@ namespace Milhouzer.AI
         /// </summary>
         public float Delay = 0f;
         
-        public override void GetComponentsReferences(GameObject target)
+        public override void GetComponentsReferences(GameObject target, GameObject instigator)
         {
 
         }

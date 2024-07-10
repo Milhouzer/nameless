@@ -79,7 +79,7 @@ namespace Milhouzer.AI.Modules.InventorySystem
         [HideInInspector]
         public IInventory Inventory;
 
-        public override void GetComponentsReferences(GameObject target)
+        public override void GetComponentsReferences(GameObject target, GameObject instigator)
         {
             Inventory = target.GetComponent<IInventory>();
         }

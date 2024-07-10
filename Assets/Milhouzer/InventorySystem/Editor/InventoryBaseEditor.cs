@@ -9,7 +9,7 @@ namespace Milhouzer.InventorySystem
         
         InventoryBase inventory;
         
-        private void OnEnable()
+        protected virtual void OnEnable()
         {
             inventory = (InventoryBase)target;
         }
