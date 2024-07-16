@@ -1,0 +1,21 @@
+{
+    "name": "Milhouzer.Game.Characters",
+    "rootNamespace": "",
+    "references": [
+        "GUID:d7721fa74c12f514187710f228b87764",
+        "GUID:37ef39b592715e245b43db372d76adbc",
+        "GUID:cf7c7237586a6d140ba79bb65d5e88de",
+        "GUID:75ef23e32a1a3864db2cee570842ef76",
+        "GUID:45561e32f03c3c24ca9521acd02305c4",
+        "GUID:4774e71fbbe96ba4b9add63690764ed2"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,0 +1,19 @@
+{
+    "name": "Milhouzer.Game.InventorySystem",
+    "rootNamespace": "",
+    "references": [
+        "GUID:c922fc2225a82354fb8628482a389eb2",
+        "GUID:d7721fa74c12f514187710f228b87764",
+        "GUID:75ef23e32a1a3864db2cee570842ef76",
+        "GUID:d525ad6bd40672747bde77962f1c401e"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

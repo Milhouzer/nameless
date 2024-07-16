@@ -1749,8 +1749,8 @@ GameObject:
   - component: {fileID: 963194228}
   - component: {fileID: 963194227}
   - component: {fileID: 963194226}
-  - component: {fileID: 963194230}
   - component: {fileID: 963194231}
+  - component: {fileID: 963194232}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1832,27 +1832,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 45, y: 213.269, z: 0}
---- !u!114 &963194230
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 963194225}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b9c90fe7da0f87c48ad544913b7c3b63, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  trackedObjectOffset: {x: 4.8, y: 12, z: 6}
-  switchTargetSpeed: 5
-  followTargetSpeed: 5
-  freeMoveSpeed: 2
-  lookAtThreshold: 0.05
-  rotationSpeed: 150
-  zoomLimits: {x: 0.3, y: 1.5}
-  zoomSpeed: 0.4
-  MovementMode: 1
 --- !u!114 &963194231
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1875,6 +1854,27 @@ MonoBehaviour:
       texture: {fileID: 2800000, guid: fd11681363e9f184f8d5e5c1e74b1232, type: 3}
     - interactableType: 3
       texture: {fileID: 2800000, guid: fd11681363e9f184f8d5e5c1e74b1232, type: 3}
+--- !u!114 &963194232
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963194225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf9fd5109b4c34b48b7a2bab3c79da7f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  trackedObjectOffset: {x: 5, y: 12, z: 5}
+  switchTargetSpeed: 1.29
+  followTargetSpeed: 1.66
+  freeMoveSpeed: 5.78
+  lookAtThreshold: 0.05
+  rotationSpeed: 30
+  zoomLimits: {x: 0.25, y: 1.2}
+  zoomSpeed: 1.43
+  MovementMode: 0
 --- !u!1 &995341544
 GameObject:
   m_ObjectHideFlags: 0
